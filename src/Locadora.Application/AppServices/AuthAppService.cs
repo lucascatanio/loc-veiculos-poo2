@@ -3,7 +3,7 @@ using Locadora.Domain.Interfaces;
 
 namespace Locadora.Application.AppServices;
 
-public class AuthAppService(IFuncionarioRepository funcionarios, IHashSenha hashSenha)
+public class AuthAppService(IFuncionarioRepository funcionarios, IHashSenha hashSenha) : IAuthAppService
 {
     public async Task<Funcionario?> LoginAsync(string email, string senha, CancellationToken ct)
     {
@@ -14,4 +14,7 @@ public class AuthAppService(IFuncionarioRepository funcionarios, IHashSenha hash
 
         return funcionario;
     }
+
+    public async Task<bool> EstaAtivoAsync(int id, CancellationToken ct) =>
+        await funcionarios.ObterPorIdAsync(id, ct) is { Ativo: true };
 }

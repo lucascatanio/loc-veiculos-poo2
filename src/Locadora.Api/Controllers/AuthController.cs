@@ -10,7 +10,7 @@ namespace Locadora.Api.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public class AuthController(AuthAppService appService, JwtTokenService tokens) : ControllerBase
+public class AuthController(IAuthAppService appService, JwtTokenService tokens) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("login")]
@@ -34,7 +34,7 @@ public class AuthController(AuthAppService appService, JwtTokenService tokens) :
     [ProducesResponseType<UsuarioLogadoResponse>(StatusCodes.Status200OK)]
     public ActionResult<UsuarioLogadoResponse> Eu() =>
         Ok(new UsuarioLogadoResponse(
-            int.Parse(User.FindFirstValue(JwtRegisteredClaimNames.Sub)!),
+            User.ObterIdFuncionario(),
             User.FindFirstValue(JwtRegisteredClaimNames.Name)!,
             User.FindFirstValue(JwtRegisteredClaimNames.Email)!));
 }

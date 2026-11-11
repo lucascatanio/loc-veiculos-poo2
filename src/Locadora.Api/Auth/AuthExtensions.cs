@@ -1,4 +1,5 @@
 using System.Text;
+using Locadora.Application.AppServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -24,6 +25,18 @@ public static class AuthExtensions
             .AddJwtBearer(options =>
             {
                 options.MapInboundClaims = false;
+                // O token vale 8h; sem esta checagem, um funcionário inativado continuaria usando a API até expirar.
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = async contexto =>
+                    {
+                        var auth = contexto.HttpContext.RequestServices.GetRequiredService<IAuthAppService>();
+                        var id = contexto.Principal!.ObterIdFuncionario();
+
+                        if (!await auth.EstaAtivoAsync(id, contexto.HttpContext.RequestAborted))
+                            contexto.Fail("Funcionário inativo.");
+                    },
+                };
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
