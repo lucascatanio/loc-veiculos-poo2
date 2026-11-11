@@ -12,6 +12,7 @@ public static class DependencyInjection
 
         services.AddScoped<IAuthAppService, AuthAppService>();
         services.AddScoped<IFuncionarioAppService, FuncionarioAppService>();
+        services.AddScoped<ICategoriaAppService, CategoriaAppService>();
 
         return services;
     }

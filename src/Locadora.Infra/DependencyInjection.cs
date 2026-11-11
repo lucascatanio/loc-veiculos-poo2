@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddDbContext<LocadoraDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
+        services.AddScoped<ICategoriaRepository, CategoriaRepository>();
         services.AddSingleton<IHashSenha, BCryptHashSenha>();
 
         return services;
