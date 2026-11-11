@@ -34,7 +34,7 @@ public class AuthController(AuthAppService appService, JwtTokenService tokens) :
     [ProducesResponseType<UsuarioLogadoResponse>(StatusCodes.Status200OK)]
     public ActionResult<UsuarioLogadoResponse> Eu() =>
         Ok(new UsuarioLogadoResponse(
-            int.Parse(User.FindFirstValue(JwtRegisteredClaimNames.Sub)!),
+            User.ObterIdFuncionario(),
             User.FindFirstValue(JwtRegisteredClaimNames.Name)!,
             User.FindFirstValue(JwtRegisteredClaimNames.Email)!));
 }

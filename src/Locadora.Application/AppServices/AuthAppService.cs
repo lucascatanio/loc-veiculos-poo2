@@ -14,4 +14,7 @@ public class AuthAppService(IFuncionarioRepository funcionarios, IHashSenha hash
 
         return funcionario;
     }
+
+    public async Task<bool> EstaAtivoAsync(int id, CancellationToken ct) =>
+        await funcionarios.ObterPorIdAsync(id, ct) is { Ativo: true };
 }

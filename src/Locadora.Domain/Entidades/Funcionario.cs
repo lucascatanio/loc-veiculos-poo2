@@ -5,6 +5,8 @@ namespace Locadora.Domain.Entidades;
 
 public class Funcionario
 {
+    public const int TamanhoMinimoSenha = 6;
+
     public int Id { get; private set; }
     public string Nome { get; private set; } = null!;
     public string Email { get; private set; } = null!;
@@ -26,9 +28,21 @@ public class Funcionario
 
     public void Atualizar(string nome, string email) => DefinirDados(nome, email);
 
-    public void Inativar() => Ativo = false;
+    public void Inativar(int idSolicitante)
+    {
+        if (Id == idSolicitante)
+            throw new DomainException("Você não pode inativar o seu próprio usuário.");
+
+        Ativo = false;
+    }
 
     public void Reativar() => Ativo = true;
+
+    public static void ValidarSenha(string senha)
+    {
+        if (string.IsNullOrEmpty(senha) || senha.Length < TamanhoMinimoSenha)
+            throw new DomainException($"A senha deve ter no mínimo {TamanhoMinimoSenha} caracteres.");
+    }
 
     public static string NormalizarEmail(string email) => email.Trim().ToLowerInvariant();
 
