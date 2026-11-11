@@ -1,3 +1,4 @@
+using Locadora.Api.Auth;
 using Locadora.Api.Mapeamento;
 using Locadora.Api.Middleware;
 using Locadora.Api.Relogio;
@@ -8,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => options.AddSwaggerComBearer());
+builder.Services.AddAutenticacaoJwt(builder.Configuration);
 
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ExcecaoHandler>();
@@ -31,6 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
