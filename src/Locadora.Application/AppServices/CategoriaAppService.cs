@@ -1,10 +1,14 @@
 using Locadora.Domain.Entidades;
 using Locadora.Domain.Excecoes;
 using Locadora.Domain.Interfaces;
+using Locadora.Domain.Servicos;
 
 namespace Locadora.Application.AppServices;
 
-public class CategoriaAppService(ICategoriaRepository categorias, IUnitOfWork unitOfWork) : ICategoriaAppService
+public class CategoriaAppService(
+    ICategoriaRepository categorias,
+    ICategoriaService categoriaService,
+    IUnitOfWork unitOfWork) : ICategoriaAppService
 {
     public Task<List<Categoria>> ListarAsync(string? busca, bool incluirInativos, CancellationToken ct) =>
         categorias.ListarAsync(busca, incluirInativos, ct);
@@ -14,6 +18,8 @@ public class CategoriaAppService(ICategoriaRepository categorias, IUnitOfWork un
 
     public async Task<Categoria> CriarAsync(string nome, decimal valorDiaria, CancellationToken ct)
     {
+        await categoriaService.GarantirNomeDisponivelAsync(nome, null, ct);
+
         var categoria = new Categoria(nome, valorDiaria);
         categorias.Adicionar(categoria);
         await unitOfWork.CommitAsync(ct);
@@ -24,6 +30,7 @@ public class CategoriaAppService(ICategoriaRepository categorias, IUnitOfWork un
     public async Task<Categoria> AtualizarAsync(int id, string nome, decimal valorDiaria, CancellationToken ct)
     {
         var categoria = await ObterAsync(id, ct);
+        await categoriaService.GarantirNomeDisponivelAsync(nome, id, ct);
 
         categoria.Atualizar(nome, valorDiaria);
         await unitOfWork.CommitAsync(ct);

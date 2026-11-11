@@ -26,5 +26,8 @@ public class CategoriaRepository(LocadoraDbContext context) : ICategoriaReposito
         return consulta.OrderBy(c => c.Nome).ToListAsync(ct);
     }
 
+    public Task<bool> ExisteNomeAsync(string nome, int? ignorarId, CancellationToken ct) =>
+        context.Set<Categoria>().AnyAsync(c => c.Nome == nome && c.Id != ignorarId, ct);
+
     public void Adicionar(Categoria categoria) => context.Set<Categoria>().Add(categoria);
 }
