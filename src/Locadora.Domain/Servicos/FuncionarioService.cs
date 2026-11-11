@@ -4,7 +4,7 @@ using Locadora.Domain.Interfaces;
 
 namespace Locadora.Domain.Servicos;
 
-public class FuncionarioService(IFuncionarioRepository funcionarios)
+public class FuncionarioService(IFuncionarioRepository funcionarios) : IFuncionarioService
 {
     public async Task GarantirEmailDisponivelAsync(string email, int? ignorarId, CancellationToken ct)
     {

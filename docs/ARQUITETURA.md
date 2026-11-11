@@ -47,6 +47,7 @@ POST /api/locacoes/{id}/finalizar
 
 ## Convenções
 
+- **Interfaces de serviço:** todo serviço de entidade e todo AppService tem interface, na mesma pasta da implementação (`Domain/Servicos/IClienteService.cs` ao lado de `ClienteService.cs`; `Application/AppServices/IClienteAppService.cs` ao lado de `ClienteAppService.cs`). Quem consome recebe a interface: AppService recebe `IClienteService`, Controller recebe `IClienteAppService`. Registro sempre `AddScoped<IX, X>()`.
 - **Erros:** regra violada → `DomainException` (422). Registro inexistente → `NaoEncontradoException` (404). Concorrência → `ConflitoConcorrenciaException` (409). Quem converte é `Api/Middleware/ExcecaoHandler.cs`, que devolve ProblemDetails; o WPF exibe o campo `detail`.
 - **Data e hora:** só o AppService lê o relógio (`TimeProvider` injetado) e passa a data para a entidade. Em Development, `Relogio:DeslocamentoHoras` no `appsettings.Development.json` adianta o relógio para demonstrar multa e tolerância.
 - **Dinheiro:** todo `decimal` vira `decimal(10,2)` por convenção no `LocadoraDbContext`.
@@ -65,6 +66,7 @@ POST /api/locacoes/{id}/finalizar
 | L — Substituição de Liskov | `Api/Relogio/RelogioDeslocado.cs` | Substitui `TimeProvider.System` sem que nenhuma camada perceba |
 | I — Segregação de interfaces | `Domain/Interfaces` | _preencher: um repositório por agregado; `IPainelConsulta` separado da escrita_ |
 | D — Inversão de dependência | `Domain/Interfaces/IUnitOfWork.cs` → `Infra/Repositorios/UnitOfWork.cs` | Domain define, Infra implementa, `Infra/DependencyInjection.cs` liga. O `.csproj` do Domain não referencia nada |
+| D — Inversão de dependência | `Application/AppServices/FuncionarioAppService.cs`, `Api/Controllers/FuncionariosController.cs` | Cada camada depende da interface da camada de baixo (`IFuncionarioService`, `IFuncionarioAppService`), nunca da classe concreta |
 
 ## Onde está o Clean Code
 

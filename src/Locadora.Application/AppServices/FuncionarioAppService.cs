@@ -7,9 +7,9 @@ namespace Locadora.Application.AppServices;
 
 public class FuncionarioAppService(
     IFuncionarioRepository funcionarios,
-    FuncionarioService funcionarioService,
+    IFuncionarioService funcionarioService,
     IHashSenha hashSenha,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork) : IFuncionarioAppService
 {
     public Task<List<Funcionario>> ListarAsync(string? busca, bool incluirInativos, CancellationToken ct) =>
         funcionarios.ListarAsync(busca, incluirInativos, ct);

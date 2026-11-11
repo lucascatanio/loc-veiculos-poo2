@@ -8,7 +8,7 @@ namespace Locadora.Api.Controllers;
 
 [ApiController]
 [Route("api/funcionarios")]
-public class FuncionariosController(FuncionarioAppService appService) : ControllerBase
+public class FuncionariosController(IFuncionarioAppService appService) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType<List<FuncionarioResponse>>(StatusCodes.Status200OK)]

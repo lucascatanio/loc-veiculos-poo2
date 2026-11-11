@@ -30,7 +30,7 @@ public static class AuthExtensions
                 {
                     OnTokenValidated = async contexto =>
                     {
-                        var auth = contexto.HttpContext.RequestServices.GetRequiredService<AuthAppService>();
+                        var auth = contexto.HttpContext.RequestServices.GetRequiredService<IAuthAppService>();
                         var id = contexto.Principal!.ObterIdFuncionario();
 
                         if (!await auth.EstaAtivoAsync(id, contexto.HttpContext.RequestAborted))

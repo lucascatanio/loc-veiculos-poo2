@@ -10,7 +10,7 @@ namespace Locadora.Api.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public class AuthController(AuthAppService appService, JwtTokenService tokens) : ControllerBase
+public class AuthController(IAuthAppService appService, JwtTokenService tokens) : ControllerBase
 {
     [AllowAnonymous]
     [HttpPost("login")]
