@@ -1,6 +1,7 @@
 using Locadora.Domain.Interfaces;
 using Locadora.Infra.Contexto;
 using Locadora.Infra.Repositorios;
+using Locadora.Infra.Seguranca;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +13,8 @@ public static class DependencyInjection
     {
         services.AddDbContext<LocadoraDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
+        services.AddSingleton<IHashSenha, BCryptHashSenha>();
 
         return services;
     }
