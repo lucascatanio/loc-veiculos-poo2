@@ -41,6 +41,7 @@ public class CategoriaAppService(
     public async Task InativarAsync(int id, CancellationToken ct)
     {
         var categoria = await ObterAsync(id, ct);
+        await categoriaService.GarantirQuePodeInativarAsync(id, ct);
 
         categoria.Inativar();
         await unitOfWork.CommitAsync(ct);
