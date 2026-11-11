@@ -4,11 +4,17 @@ using Locadora.Domain.Interfaces;
 
 namespace Locadora.Domain.Servicos;
 
-public class ClienteService(IClienteRepository clientes) : IClienteService
+public class ClienteService(IClienteRepository clientes, ILocacaoRepository locacoes) : IClienteService
 {
     public async Task GarantirCpfDisponivelAsync(string cpf, CancellationToken ct)
     {
         if (await clientes.ExisteCpfAsync(Cliente.NormalizarCpf(cpf), ct))
             throw new DomainException("Já existe um cliente com este CPF.");
+    }
+
+    public async Task GarantirQuePodeInativarAsync(int clienteId, CancellationToken ct)
+    {
+        if (await locacoes.ExisteAbertaParaClienteAsync(clienteId, ct))
+            throw new DomainException("O cliente tem locação aberta.");
     }
 }

@@ -42,6 +42,7 @@ public class ClienteAppService(
     public async Task InativarAsync(int id, CancellationToken ct)
     {
         var cliente = await ObterAsync(id, ct);
+        await clienteService.GarantirQuePodeInativarAsync(id, ct);
 
         cliente.Inativar();
         await unitOfWork.CommitAsync(ct);
