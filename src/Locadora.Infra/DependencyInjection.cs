@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
         services.AddScoped<ICategoriaRepository, CategoriaRepository>();
         services.AddScoped<IClienteRepository, ClienteRepository>();
+        services.AddScoped<IVeiculoRepository, VeiculoRepository>();
         services.AddSingleton<IHashSenha, BCryptHashSenha>();
 
         return services;
