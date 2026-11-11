@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Diagnostics;
 
 namespace Locadora.Api.Middleware;
 
-public class ExcecaoHandler(IProblemDetailsService problemDetails, ILogger<ExcecaoHandler> logger) : IExceptionHandler
+public class ExcecaoHandler(ILogger<ExcecaoHandler> logger) : IExceptionHandler
 {
     private static readonly Dictionary<Type, (int Status, string Titulo)> Mapa = new()
     {
@@ -16,13 +16,10 @@ public class ExcecaoHandler(IProblemDetailsService problemDetails, ILogger<Excec
     {
         var (status, titulo, detalhe) = Classificar(exception);
 
-        httpContext.Response.StatusCode = status;
-        return await problemDetails.TryWriteAsync(new ProblemDetailsContext
-        {
-            HttpContext = httpContext,
-            Exception = exception,
-            ProblemDetails = { Status = status, Title = titulo, Detail = detalhe },
-        });
+        // Results.Problem escreve JSON mesmo com Accept: text/plain (padrão do Swagger UI);
+        // IProblemDetailsService recusaria e o detail se perderia.
+        await Results.Problem(detail: detalhe, statusCode: status, title: titulo).ExecuteAsync(httpContext);
+        return true;
     }
 
     private (int Status, string Titulo, string Detalhe) Classificar(Exception exception)
