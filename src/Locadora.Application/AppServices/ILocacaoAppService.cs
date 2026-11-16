@@ -14,4 +14,6 @@ public interface ILocacaoAppService
     Task<PreviaDevolucao> ObterPreviaAsync(int id, CancellationToken ct);
     Task<Locacao> FinalizarAsync(
         int id, int kmDevolucao, string? observacao, IReadOnlyList<PagamentoInformado> saidas, CancellationToken ct);
+    Task<Locacao> ProrrogarAsync(int id, DateTime novaDataPrevista, CancellationToken ct);
+    Task<Locacao> CancelarAsync(int id, CancellationToken ct);
 }

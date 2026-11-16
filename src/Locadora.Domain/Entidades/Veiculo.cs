@@ -59,6 +59,14 @@ public partial class Veiculo
         Status = StatusVeiculo.Disponivel;
     }
 
+    public void CancelarAlocacao()
+    {
+        if (Status != StatusVeiculo.Locado)
+            throw new DomainException("O veículo não está locado.");
+
+        Status = StatusVeiculo.Disponivel;
+    }
+
     public void EnviarParaManutencao()
     {
         if (!PodeSerLocado())

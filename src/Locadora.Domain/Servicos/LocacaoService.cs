@@ -72,4 +72,22 @@ public class LocacaoService(
 
         return locacao;
     }
+
+    public async Task<Locacao> ProrrogarAsync(int id, DateTime agora, DateTime novaDataPrevista, CancellationToken ct)
+    {
+        var locacao = await ObterAsync(id, ct);
+
+        locacao.Prorrogar(agora, novaDataPrevista);
+
+        return locacao;
+    }
+
+    public async Task<Locacao> CancelarAsync(int id, CancellationToken ct)
+    {
+        var locacao = await ObterAsync(id, ct);
+
+        locacao.Cancelar();
+
+        return locacao;
+    }
 }
