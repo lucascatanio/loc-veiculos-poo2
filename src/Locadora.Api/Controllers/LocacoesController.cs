@@ -37,7 +37,7 @@ public class LocacoesController(ILocacaoAppService appService) : ControllerBase
     public async Task<ActionResult<LocacaoResponse>> Abrir(AbrirLocacaoRequest request, CancellationToken ct)
     {
         var entradas = (request.Entradas ?? [])
-            .Select(e => new EntradaPagamento(e.Valor, e.Forma))
+            .Select(e => new PagamentoInformado(e.Valor, e.Forma))
             .ToList();
 
         var locacao = await appService.AbrirAsync(
@@ -54,7 +54,33 @@ public class LocacoesController(ILocacaoAppService appService) : ControllerBase
     public async Task<ActionResult<LocacaoResponse>> RegistrarPagamento(
         int id, PagamentoRequest request, CancellationToken ct)
     {
-        var locacao = await appService.RegistrarEntradaAsync(id, new EntradaPagamento(request.Valor, request.Forma), ct);
+        var locacao = await appService.RegistrarEntradaAsync(id, new PagamentoInformado(request.Valor, request.Forma), ct);
+        return Ok(locacao.Adapt<LocacaoResponse>());
+    }
+
+    [HttpGet("{id:int}/previa-devolucao")]
+    [ProducesResponseType<PreviaDevolucaoResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<PreviaDevolucaoResponse>> PreviaDevolucao(int id, CancellationToken ct)
+    {
+        var previa = await appService.ObterPreviaAsync(id, ct);
+        return Ok(previa.Adapt<PreviaDevolucaoResponse>());
+    }
+
+    [HttpPost("{id:int}/finalizar")]
+    [ProducesResponseType<LocacaoResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<LocacaoResponse>> Finalizar(
+        int id, FinalizarLocacaoRequest request, CancellationToken ct)
+    {
+        var saidas = (request.Saidas ?? [])
+            .Select(s => new PagamentoInformado(s.Valor, s.Forma))
+            .ToList();
+
+        var locacao = await appService.FinalizarAsync(id, request.KmDevolucao, request.Observacao, saidas, ct);
         return Ok(locacao.Adapt<LocacaoResponse>());
     }
 }

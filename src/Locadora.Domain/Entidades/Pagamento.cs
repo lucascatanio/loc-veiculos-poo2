@@ -28,4 +28,7 @@ public class Pagamento
 
     public static Pagamento CriarEntrada(decimal valor, string forma, DateTime dataPagamento) =>
         new(valor, ConversorEnum.Converter<FormaPagamento>(forma, "forma de pagamento"), TipoPagamento.Entrada, dataPagamento);
+
+    public static Pagamento CriarSaida(decimal valor, string forma, DateTime dataPagamento) =>
+        new(valor, ConversorEnum.Converter<FormaPagamento>(forma, "forma de pagamento"), TipoPagamento.Saida, dataPagamento);
 }
