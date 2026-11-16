@@ -1,5 +1,4 @@
 using Locadora.Domain.Entidades;
-using Locadora.Domain.Excecoes;
 using Locadora.Domain.Interfaces;
 using Locadora.Domain.Servicos;
 
@@ -16,8 +15,8 @@ public class VeiculoAppService(
     public Task<List<Veiculo>> ListarDisponiveisAsync(int? categoriaId, CancellationToken ct) =>
         veiculos.ListarDisponiveisAsync(categoriaId, ct);
 
-    public async Task<Veiculo> ObterAsync(int id, CancellationToken ct) =>
-        await veiculos.ObterPorIdAsync(id, ct) ?? throw new NaoEncontradoException("Veículo", id);
+    public Task<Veiculo> ObterAsync(int id, CancellationToken ct) =>
+        veiculoService.ObterAsync(id, ct);
 
     public async Task<Veiculo> CriarAsync(
         string placa, string marca, string modelo, int ano, string cor, int kmAtual, int categoriaId,

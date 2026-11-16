@@ -10,5 +10,8 @@ public class LocacaoMapeamento : IRegister
     {
         config.NewConfig<Locacao, LocacaoResponse>()
             .Map(d => d.SaldoDevedor, s => s.SaldoDevedor());
+
+        config.NewConfig<Locacao, LocacaoResumoResponse>()
+            .Map(d => d.SaldoDevedor, s => s.SaldoDevedor());
     }
 }

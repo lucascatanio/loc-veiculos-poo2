@@ -27,20 +27,23 @@ Locadora.Desktop (WPF) ──HTTP──▶ Locadora.Api ──▶ Locadora.Appli
 | Camada | Faz | Não faz |
 |---|---|---|
 | **Entidade** (`Domain/Entidades`) | Mantém invariantes e cálculos que dependem só do próprio estado. Lança `DomainException` | Acessar banco, ler o relógio, expor setters públicos |
-| **Serviço de entidade** (`Domain/Servicos`) | Regras que precisam consultar dados: unicidade, "existe locação aberta?", veículo disponível | Commitar, conhecer HTTP ou DTO |
-| **AppService** (`Application/AppServices`) | Orquestra o caso de uso: carrega, chama serviço/entidade, obtém "agora" do `TimeProvider`, chama `IUnitOfWork.CommitAsync()` e devolve a entidade | Ter regra de negócio própria |
-| **Controller** (`Api/Controllers`) | Recebe o request, valida formato (DataAnnotations), converte DTO ↔ parâmetros/entidade com Mapster e devolve o status HTTP | Acessar repositório ou serviço de entidade diretamente; try/catch |
-| **Infra** | Implementa as interfaces do Domain com EF Core e SQL | Ter regra de negócio |
+| **Serviço de entidade** (`Domain/Servicos`) | Busca por id que lança `NaoEncontradoException` (`ObterAsync`); regras que precisam consultar dados: unicidade, "existe locação aberta?", veículo disponível; operações que alteram o agregado (ex.: `LocacaoService.RegistrarEntradaAsync`) | Commitar, conhecer HTTP ou DTO, ler o relógio |
+| **AppService** (`Application/AppServices`) | Orquestra o caso de uso: obtém "agora" do `TimeProvider`, chama o serviço de entidade, chama `IUnitOfWork.CommitAsync()` e devolve a entidade. Listagens podem ir direto ao repositório | Ter regra de negócio própria; lançar `NaoEncontradoException` |
+| **Controller** (`Api/Controllers`) | Recebe o request, valida formato (DataAnnotations e model binding), converte DTO ↔ parâmetros/entidade com Mapster e devolve o status HTTP | Acessar repositório ou serviço de entidade diretamente; try/catch; definir filtro padrão; converter texto em enum de negócio |
+| **Infra** | Implementa as interfaces do Domain com EF Core e SQL. Valores padrão de filtro de consulta (ex.: `status` ausente → `Aberta`) | Ter regra de negócio |
 
 ### Fluxo de uma requisição
 
 ```
-POST /api/locacoes/{id}/finalizar
-  LocacoesController.Finalizar(id, FinalizarLocacaoRequest)
-    → LocacaoAppService.FinalizarAsync(id, km, obs, saidas)
-        → ILocacaoRepository.ObterComVeiculoEPagamentosAsync(id)
-        → locacao.Finalizar(agora, km, obs, saidas)      ← regra na entidade
-        → IUnitOfWork.CommitAsync()                       ← única transação
+POST /api/locacoes/{id}/pagamentos
+  LocacoesController.RegistrarPagamento(id, PagamentoRequest)
+    → LocacaoAppService.RegistrarEntradaAsync(id, entrada)      ← lê "agora" do TimeProvider
+        → LocacaoService.RegistrarEntradaAsync(id, entrada, agora)
+            → LocacaoService.ObterAsync(id)                      ← 404 se não existe
+                → ILocacaoRepository.ObterComDetalhesAsync(id)
+            → Pagamento.CriarEntrada(valor, forma, agora)        ← forma e valor validados na entidade
+            → locacao.RegistrarPagamento(pagamento)              ← status e saldo validados na entidade
+        → IUnitOfWork.CommitAsync()                              ← única transação
     ← Locacao
   ← LocacaoResponse (Mapster)
 ```
@@ -48,6 +51,7 @@ POST /api/locacoes/{id}/finalizar
 ## Convenções
 
 - **Interfaces de serviço:** todo serviço de entidade e todo AppService tem interface, na mesma pasta da implementação (`Domain/Servicos/IClienteService.cs` ao lado de `ClienteService.cs`; `Application/AppServices/IClienteAppService.cs` ao lado de `ClienteAppService.cs`). Quem consome recebe a interface: AppService recebe `IClienteService`, Controller recebe `IClienteAppService`. Registro sempre `AddScoped<IX, X>()`.
+- **Busca por id:** todo serviço de entidade expõe `ObterAsync(id)`, que lança `NaoEncontradoException` quando o registro não existe. AppServices e outros serviços de entidade consomem esse método (ex.: `LocacaoService` usa `IClienteService.ObterAsync` e `IVeiculoService.ObterAsync`; `VeiculoService` usa `ICategoriaService.ObterAsync`) em vez de chamar `ObterPorIdAsync` do repositório e lançar a exceção por conta própria.
 - **Erros:** regra violada → `DomainException` (422). Registro inexistente → `NaoEncontradoException` (404). Concorrência → `ConflitoConcorrenciaException` (409). Quem converte é `Api/Middleware/ExcecaoHandler.cs`, que devolve ProblemDetails; o WPF exibe o campo `detail`.
 - **Data e hora:** só o AppService lê o relógio (`TimeProvider` injetado) e passa a data para a entidade. Em Development, `Relogio:DeslocamentoHoras` no `appsettings.Development.json` adianta o relógio para demonstrar multa e tolerância.
 - **Dinheiro:** todo `decimal` vira `decimal(10,2)` por convenção no `LocadoraDbContext`.
@@ -60,7 +64,7 @@ POST /api/locacoes/{id}/finalizar
 
 | Princípio | Onde | Como |
 |---|---|---|
-| S — Responsabilidade única | `Locacao` / `LocacaoService` / `LocacaoAppService` / `LocacoesController` | _preencher ao implementar_ |
+| S — Responsabilidade única | `Locacao` / `LocacaoService` / `LocacaoAppService` / `LocacoesController` | A entidade guarda invariantes e cálculos (saldo, diárias); o serviço busca dados e aplica regras que dependem deles; o AppService só orquestra relógio e commit; o controller só traduz HTTP ↔ DTO |
 | O — Aberto/fechado | `Api/Middleware/ExcecaoHandler.cs` | Novo tipo de exceção entra no dicionário `Mapa`, sem novo `if` |
 | O — Aberto/fechado | `Infra/Contexto/LocadoraDbContext.cs` | `ApplyConfigurationsFromAssembly`: entidade nova não altera o DbContext |
 | L — Substituição de Liskov | `Api/Relogio/RelogioDeslocado.cs` | Substitui `TimeProvider.System` sem que nenhuma camada perceba |
