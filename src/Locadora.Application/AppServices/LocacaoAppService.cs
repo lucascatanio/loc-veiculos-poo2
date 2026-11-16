@@ -22,9 +22,7 @@ public class LocacaoAppService(
         IReadOnlyList<PagamentoInformado> entradas, CancellationToken ct)
     {
         var agora = relogio.GetLocalNow().DateTime;
-        // O sistema grava horário local da loja sem fuso; datas com fuso no JSON são convertidas para ele.
-        if (dataPrevista.Kind != DateTimeKind.Unspecified)
-            dataPrevista = DateTime.SpecifyKind(dataPrevista.ToLocalTime(), DateTimeKind.Unspecified);
+        dataPrevista = NormalizarFuso(dataPrevista);
 
         var locacao = await locacaoService.AbrirAsync(
             clienteId, veiculoId, agora, dataPrevista, observacao, entradas, ct);
@@ -58,4 +56,29 @@ public class LocacaoAppService(
 
         return locacao;
     }
+
+    public async Task<Locacao> ProrrogarAsync(int id, DateTime novaDataPrevista, CancellationToken ct)
+    {
+        var agora = relogio.GetLocalNow().DateTime;
+        novaDataPrevista = NormalizarFuso(novaDataPrevista);
+
+        var locacao = await locacaoService.ProrrogarAsync(id, agora, novaDataPrevista, ct);
+        await unitOfWork.CommitAsync(ct);
+
+        return locacao;
+    }
+
+    public async Task<Locacao> CancelarAsync(int id, CancellationToken ct)
+    {
+        var locacao = await locacaoService.CancelarAsync(id, ct);
+        await unitOfWork.CommitAsync(ct);
+
+        return locacao;
+    }
+
+    // O sistema grava horário local da loja sem fuso; datas com fuso no JSON são convertidas para ele.
+    private static DateTime NormalizarFuso(DateTime data) =>
+        data.Kind == DateTimeKind.Unspecified
+            ? data
+            : DateTime.SpecifyKind(data.ToLocalTime(), DateTimeKind.Unspecified);
 }

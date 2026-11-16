@@ -134,6 +134,29 @@ public class Locacao
         Status = StatusLocacao.Finalizada;
     }
 
+    public void Prorrogar(DateTime agora, DateTime novaDataPrevista)
+    {
+        if (Status != StatusLocacao.Aberta)
+            throw new DomainException("Só é possível prorrogar locação aberta.");
+        if (agora > DataPrevistaDevolucao)
+            throw new DomainException("Locação vencida não pode ser prorrogada.");
+        if (novaDataPrevista <= DataPrevistaDevolucao)
+            throw new DomainException("A nova data deve ser posterior à data prevista atual.");
+
+        DataPrevistaDevolucao = novaDataPrevista;
+        ValorPrevisto = Math.Round(ContarDiarias(DataRetirada, novaDataPrevista) * ValorDiaria, 2, MidpointRounding.AwayFromZero);
+        ValorTotal = ValorPrevisto;
+    }
+
+    public void Cancelar()
+    {
+        if (Status != StatusLocacao.Aberta)
+            throw new DomainException("Só é possível cancelar locação aberta.");
+
+        Veiculo.CancelarAlocacao();
+        Status = StatusLocacao.Cancelada;
+    }
+
     private static int ContarDiarias(DateTime inicio, DateTime fim) =>
         Math.Max(1, (int)Math.Ceiling((fim - inicio).TotalHours / 24));
 }

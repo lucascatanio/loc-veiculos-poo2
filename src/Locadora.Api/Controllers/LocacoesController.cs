@@ -83,4 +83,26 @@ public class LocacoesController(ILocacaoAppService appService) : ControllerBase
         var locacao = await appService.FinalizarAsync(id, request.KmDevolucao, request.Observacao, saidas, ct);
         return Ok(locacao.Adapt<LocacaoResponse>());
     }
+
+    [HttpPost("{id:int}/prorrogar")]
+    [ProducesResponseType<LocacaoResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<LocacaoResponse>> Prorrogar(
+        int id, ProrrogarLocacaoRequest request, CancellationToken ct)
+    {
+        var locacao = await appService.ProrrogarAsync(id, request.NovaDataPrevista, ct);
+        return Ok(locacao.Adapt<LocacaoResponse>());
+    }
+
+    [HttpPost("{id:int}/cancelar")]
+    [ProducesResponseType<LocacaoResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
+    public async Task<ActionResult<LocacaoResponse>> Cancelar(int id, CancellationToken ct)
+    {
+        var locacao = await appService.CancelarAsync(id, ct);
+        return Ok(locacao.Adapt<LocacaoResponse>());
+    }
 }

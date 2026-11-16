@@ -15,4 +15,6 @@ public interface ILocacaoService
     Task<Locacao> FinalizarAsync(
         int id, DateTime dataDevolucao, int kmDevolucao, string? observacao,
         IReadOnlyList<PagamentoInformado> saidas, CancellationToken ct);
+    Task<Locacao> ProrrogarAsync(int id, DateTime agora, DateTime novaDataPrevista, CancellationToken ct);
+    Task<Locacao> CancelarAsync(int id, CancellationToken ct);
 }
