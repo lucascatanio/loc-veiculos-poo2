@@ -1,0 +1,94 @@
+<UserControl x:Class="Locadora.Desktop.Views.ShellView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Style="{StaticResource TelaBase}">
+    <UserControl.Resources>
+        <Style x:Key="ItemDoMenu" TargetType="ListBoxItem">
+            <Setter Property="Foreground" Value="{StaticResource PapelBrush}"/>
+            <Setter Property="FontFamily" Value="{StaticResource BarlowMedium}"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Fundo" Background="Transparent" BorderBrush="Transparent"
+                                BorderThickness="4,0,0,0" Padding="16,10" SnapsToDevicePixels="True">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Fundo" Property="Background" Value="{StaticResource MenuHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Fundo" Property="Background" Value="{StaticResource AzulMercosulBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="Fundo" Property="BorderBrush" Value="{StaticResource FaixaAmarelaBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BotaoSair" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource DesabilitadoBrush}"/>
+            <Setter Property="FontFamily" Value="{StaticResource BarlowMedium}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocoVisivel}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent" Padding="0,4" SnapsToDevicePixels="True">
+                            <ContentPresenter TextElement.Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource PapelBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Background="{StaticResource AsfaltoBrush}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Margin="20,24,20,24">
+                    <Rectangle Width="32" Height="4" HorizontalAlignment="Left" Fill="{StaticResource FaixaAmarelaBrush}"/>
+                    <TextBlock Style="{StaticResource TextoSubtitulo}" Margin="0,8,0,0"
+                               Foreground="{StaticResource PapelBrush}" Text="Locadora"/>
+                </StackPanel>
+
+                <ListBox Grid.Row="1" ItemsSource="{Binding Itens}" SelectedItem="{Binding ItemSelecionado}"
+                         DisplayMemberPath="Titulo" ItemContainerStyle="{StaticResource ItemDoMenu}"
+                         Background="Transparent" BorderThickness="0" FocusVisualStyle="{x:Null}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+
+                <StackPanel Grid.Row="2" Margin="20,16,20,20">
+                    <Rectangle Height="1" Fill="{StaticResource MenuHoverBrush}" Margin="0,0,0,16"/>
+                    <TextBlock Style="{StaticResource TextoDestaque}" Foreground="{StaticResource PapelBrush}"
+                               TextTrimming="CharacterEllipsis" Text="{Binding NomeFuncionario}"/>
+                    <Button Style="{StaticResource BotaoSair}" HorizontalAlignment="Left" Margin="0,4,0,0"
+                            Content="Sair" Command="{Binding SairCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ContentControl Grid.Column="1" Content="{Binding Navegacao.ViewModelAtual}" IsTabStop="False"/>
+    </Grid>
+</UserControl>

@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Markup;
 using Locadora.Desktop.Servicos;
+using Locadora.Desktop.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -24,12 +25,16 @@ public partial class App : Application
         });
 
         builder.Services.AdicionarServicosDaLocadora(builder.Configuration);
+        builder.Services.AddSingleton<MainViewModel>();
         builder.Services.AddSingleton<MainWindow>();
 
         _host = builder.Build();
         await _host.StartAsync();
 
         _host.Services.GetRequiredService<MainWindow>().Show();
+#if DEBUG
+        await Desenvolvimento.AtalhosDeDesenvolvimento.AplicarAsync(_host.Services.GetRequiredService<MainViewModel>(), e.Args);
+#endif
     }
 
     // Sem isso o WPF formata datas e números (StringFormat) em en-US, independente do Windows.

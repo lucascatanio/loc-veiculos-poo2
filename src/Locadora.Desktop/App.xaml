@@ -15,6 +15,7 @@
             <conv:BoolParaVisibilidade x:Key="BoolParaVisibilidade"/>
             <conv:BoolParaVisibilidade x:Key="BoolParaVisibilidadeInvertida" Inverter="True"/>
             <conv:StatusParaBrush x:Key="StatusParaBrush"/>
+            <conv:TextoParaVisibilidade x:Key="TextoParaVisibilidade"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
