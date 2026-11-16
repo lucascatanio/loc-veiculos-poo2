@@ -1,0 +1,29 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="AsfaltoCor">#23272E</Color>
+    <Color x:Key="ConcretoCor">#ECEEF1</Color>
+    <Color x:Key="PapelCor">#FFFFFF</Color>
+    <Color x:Key="AzulMercosulCor">#003399</Color>
+    <Color x:Key="FaixaAmarelaCor">#E8B400</Color>
+    <Color x:Key="SinalVermelhoCor">#C62828</Color>
+    <Color x:Key="LiberadoCor">#2E7D32</Color>
+    <Color x:Key="TextoSecundarioCor">#6B7280</Color>
+    <Color x:Key="DivisoriaCor">#D5D8DD</Color>
+
+    <SolidColorBrush x:Key="AsfaltoBrush" Color="{StaticResource AsfaltoCor}"/>
+    <SolidColorBrush x:Key="ConcretoBrush" Color="{StaticResource ConcretoCor}"/>
+    <SolidColorBrush x:Key="PapelBrush" Color="{StaticResource PapelCor}"/>
+    <SolidColorBrush x:Key="AzulMercosulBrush" Color="{StaticResource AzulMercosulCor}"/>
+    <SolidColorBrush x:Key="FaixaAmarelaBrush" Color="{StaticResource FaixaAmarelaCor}"/>
+    <SolidColorBrush x:Key="SinalVermelhoBrush" Color="{StaticResource SinalVermelhoCor}"/>
+    <SolidColorBrush x:Key="LiberadoBrush" Color="{StaticResource LiberadoCor}"/>
+    <SolidColorBrush x:Key="TextoSecundarioBrush" Color="{StaticResource TextoSecundarioCor}"/>
+    <SolidColorBrush x:Key="DivisoriaBrush" Color="{StaticResource DivisoriaCor}"/>
+
+    <SolidColorBrush x:Key="AzulSuaveBrush" Color="#E6ECF7"/>
+    <SolidColorBrush x:Key="AzulEscuroBrush" Color="#002A80"/>
+    <SolidColorBrush x:Key="VermelhoEscuroBrush" Color="#A82020"/>
+    <SolidColorBrush x:Key="DesabilitadoBrush" Color="#A9AEB6"/>
+    <SolidColorBrush x:Key="MenuHoverBrush" Color="#2F343D"/>
+</ResourceDictionary>

@@ -1,9 +1,20 @@
 ﻿<Application x:Class="Locadora.Desktop.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Locadora.Desktop"
-             StartupUri="MainWindow.xaml">
+             xmlns:conv="clr-namespace:Locadora.Desktop.Conversores">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Temas/Cores.xaml"/>
+                <ResourceDictionary Source="Temas/Tipografia.xaml"/>
+                <ResourceDictionary Source="Temas/Controles.xaml"/>
+                <ResourceDictionary Source="Temas/Telas.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:MoedaBrConversor x:Key="MoedaBr"/>
+            <conv:BoolParaVisibilidade x:Key="BoolParaVisibilidade"/>
+            <conv:BoolParaVisibilidade x:Key="BoolParaVisibilidadeInvertida" Inverter="True"/>
+            <conv:StatusParaBrush x:Key="StatusParaBrush"/>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
