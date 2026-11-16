@@ -1,7 +1,6 @@
 using Locadora.Api.Dtos.Locacoes;
 using Locadora.Application.AppServices;
 using Locadora.Domain.Enums;
-using Locadora.Domain.Servicos;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,7 +36,9 @@ public class LocacoesController(ILocacaoAppService appService) : ControllerBase
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status422UnprocessableEntity)]
     public async Task<ActionResult<LocacaoResponse>> Abrir(AbrirLocacaoRequest request, CancellationToken ct)
     {
-        var entradas = (request.Entradas ?? []).Adapt<List<EntradaPagamento>>();
+        var entradas = (request.Entradas ?? [])
+            .Select(e => (e.Valor, e.Forma))
+            .ToList();
 
         var locacao = await appService.AbrirAsync(
             request.ClienteId, request.VeiculoId, request.DataPrevistaDevolucao, request.Observacao, entradas, ct);
@@ -53,7 +54,7 @@ public class LocacoesController(ILocacaoAppService appService) : ControllerBase
     public async Task<ActionResult<LocacaoResponse>> RegistrarPagamento(
         int id, PagamentoRequest request, CancellationToken ct)
     {
-        var locacao = await appService.RegistrarEntradaAsync(id, request.Adapt<EntradaPagamento>(), ct);
+        var locacao = await appService.RegistrarEntradaAsync(id, request.Valor, request.Forma, ct);
         return Ok(locacao.Adapt<LocacaoResponse>());
     }
 }
