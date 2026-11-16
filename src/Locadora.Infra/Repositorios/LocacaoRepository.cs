@@ -8,18 +8,14 @@ namespace Locadora.Infra.Repositorios;
 
 public class LocacaoRepository(LocadoraDbContext context) : ILocacaoRepository
 {
-    public Task<List<Locacao>> ListarAsync(StatusLocacao? status, CancellationToken ct)
-    {
-        var filtro = status ?? StatusLocacao.Aberta;
-
-        return context.Set<Locacao>()
+    public Task<List<Locacao>> ListarAsync(StatusLocacao status, CancellationToken ct) =>
+        context.Set<Locacao>()
             .Include(l => l.Cliente)
             .Include(l => l.Veiculo)
             .AsNoTracking()
-            .Where(l => l.Status == filtro)
+            .Where(l => l.Status == status)
             .OrderBy(l => l.DataPrevistaDevolucao)
             .ToListAsync(ct);
-    }
 
     public Task<Locacao?> ObterComDetalhesAsync(int id, CancellationToken ct) =>
         context.Set<Locacao>()
