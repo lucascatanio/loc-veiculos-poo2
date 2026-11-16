@@ -27,10 +27,10 @@ Locadora.Desktop (WPF) ──HTTP──▶ Locadora.Api ──▶ Locadora.Appli
 | Camada | Faz | Não faz |
 |---|---|---|
 | **Entidade** (`Domain/Entidades`) | Mantém invariantes e cálculos que dependem só do próprio estado. Lança `DomainException` | Acessar banco, ler o relógio, expor setters públicos |
-| **Serviço de entidade** (`Domain/Servicos`) | Busca por id que lança `NaoEncontradoException` (`ObterAsync`); regras que precisam consultar dados: unicidade, "existe locação aberta?", veículo disponível; operações que alteram o agregado (ex.: `LocacaoService.RegistrarEntradaAsync`) | Commitar, conhecer HTTP ou DTO, ler o relógio |
+| **Serviço de entidade** (`Domain/Servicos`) | Busca por id que lança `NaoEncontradoException` (`ObterAsync`); regras que precisam consultar dados: unicidade, "existe locação aberta?", veículo disponível, autenticação; operações que alteram o agregado (ex.: `LocacaoService.RegistrarEntradaAsync`); valor padrão de filtro (ex.: `status` ausente → `Aberta`) | Commitar, conhecer HTTP ou DTO, ler o relógio |
 | **AppService** (`Application/AppServices`) | Orquestra o caso de uso: obtém "agora" do `TimeProvider`, chama o serviço de entidade, chama `IUnitOfWork.CommitAsync()` e devolve a entidade. Listagens podem ir direto ao repositório | Ter regra de negócio própria; lançar `NaoEncontradoException` |
 | **Controller** (`Api/Controllers`) | Recebe o request, valida formato (DataAnnotations e model binding), converte DTO ↔ parâmetros/entidade com Mapster e devolve o status HTTP | Acessar repositório ou serviço de entidade diretamente; try/catch; definir filtro padrão; converter texto em enum de negócio |
-| **Infra** | Implementa as interfaces do Domain com EF Core e SQL. Valores padrão de filtro de consulta (ex.: `status` ausente → `Aberta`) | Ter regra de negócio |
+| **Infra** | Implementa as interfaces do Domain com EF Core e SQL | Ter regra de negócio, inclusive valor padrão de filtro |
 
 ### Fluxo de uma requisição
 
@@ -52,6 +52,8 @@ POST /api/locacoes/{id}/pagamentos
 
 - **Interfaces de serviço:** todo serviço de entidade e todo AppService tem interface, na mesma pasta da implementação (`Domain/Servicos/IClienteService.cs` ao lado de `ClienteService.cs`; `Application/AppServices/IClienteAppService.cs` ao lado de `ClienteAppService.cs`). Quem consome recebe a interface: AppService recebe `IClienteService`, Controller recebe `IClienteAppService`. Registro sempre `AddScoped<IX, X>()`.
 - **Busca por id:** todo serviço de entidade expõe `ObterAsync(id)`, que lança `NaoEncontradoException` quando o registro não existe. AppServices e outros serviços de entidade consomem esse método (ex.: `LocacaoService` usa `IClienteService.ObterAsync` e `IVeiculoService.ObterAsync`; `VeiculoService` usa `ICategoriaService.ObterAsync`) em vez de chamar `ObterPorIdAsync` do repositório e lançar a exceção por conta própria.
+- **Enums vindos do HTTP:** chegam como `string` (no corpo e na query) e são convertidos no Domain por `Domain/Enums/ConversorEnum.Converter<T>`, que aceita o nome sem diferenciar maiúsculas e recusa números ("7"). Valor inválido → `DomainException` (422) com os nomes aceitos na mensagem. Controllers e DTOs não referenciam enums do Domain.
+- **Parâmetros compostos:** dados de entrada que o Domain recebe agrupados (ex.: `EntradaPagamento`) são `record`s em `Domain/Valores`, nunca tuplas.
 - **Erros:** regra violada → `DomainException` (422). Registro inexistente → `NaoEncontradoException` (404). Concorrência → `ConflitoConcorrenciaException` (409). Quem converte é `Api/Middleware/ExcecaoHandler.cs`, que devolve ProblemDetails; o WPF exibe o campo `detail`.
 - **Data e hora:** só o AppService lê o relógio (`TimeProvider` injetado) e passa a data para a entidade. Em Development, `Relogio:DeslocamentoHoras` no `appsettings.Development.json` adianta o relógio para demonstrar multa e tolerância.
 - **Dinheiro:** todo `decimal` vira `decimal(10,2)` por convenção no `LocadoraDbContext`.

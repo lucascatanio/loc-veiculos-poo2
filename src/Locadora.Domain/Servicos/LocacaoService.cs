@@ -1,6 +1,8 @@
 using Locadora.Domain.Entidades;
+using Locadora.Domain.Enums;
 using Locadora.Domain.Excecoes;
 using Locadora.Domain.Interfaces;
+using Locadora.Domain.Valores;
 
 namespace Locadora.Domain.Servicos;
 
@@ -9,6 +11,15 @@ public class LocacaoService(
     IClienteService clienteService,
     IVeiculoService veiculoService) : ILocacaoService
 {
+    public Task<List<Locacao>> ListarAsync(string? status, CancellationToken ct)
+    {
+        var filtro = string.IsNullOrWhiteSpace(status)
+            ? StatusLocacao.Aberta
+            : ConversorEnum.Converter<StatusLocacao>(status, "status");
+
+        return locacoes.ListarAsync(filtro, ct);
+    }
+
     public async Task<Locacao> ObterAsync(int id, CancellationToken ct) =>
         await locacoes.ObterComDetalhesAsync(id, ct) ?? throw new NaoEncontradoException("Locação", id);
 
