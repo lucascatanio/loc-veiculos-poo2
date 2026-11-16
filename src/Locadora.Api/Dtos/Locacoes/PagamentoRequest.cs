@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Locadora.Api.Dtos.Locacoes;
 
+// Valor e Forma sem validação de conteúdo aqui: as regras ficam no Pagamento (422), não no formato (400).
 public record PagamentoRequest(
-    [Range(0.01, 99999999.99)] decimal Valor,
+    decimal Valor,
     [Required] string Forma);

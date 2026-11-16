@@ -25,4 +25,13 @@ public class Pagamento
         Tipo = tipo;
         DataPagamento = dataPagamento;
     }
+
+    public static Pagamento CriarEntrada(decimal valor, string forma, DateTime dataPagamento) =>
+        new(valor, ConverterForma(forma), TipoPagamento.Entrada, dataPagamento);
+
+    // Enum.TryParse sozinho aceita qualquer número ("7"); IsDefined barra o que não é membro do enum.
+    private static FormaPagamento ConverterForma(string forma) =>
+        Enum.TryParse<FormaPagamento>(forma, ignoreCase: true, out var convertida) && Enum.IsDefined(convertida)
+            ? convertida
+            : throw new DomainException("Forma de pagamento inválida. Use: Dinheiro, CartaoCredito, CartaoDebito ou Pix.");
 }

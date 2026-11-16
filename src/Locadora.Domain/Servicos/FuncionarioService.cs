@@ -6,6 +6,9 @@ namespace Locadora.Domain.Servicos;
 
 public class FuncionarioService(IFuncionarioRepository funcionarios) : IFuncionarioService
 {
+    public async Task<Funcionario> ObterAsync(int id, CancellationToken ct) =>
+        await funcionarios.ObterPorIdAsync(id, ct) ?? throw new NaoEncontradoException("Funcionário", id);
+
     public async Task GarantirEmailDisponivelAsync(string email, int? ignorarId, CancellationToken ct)
     {
         if (await funcionarios.ExisteEmailAsync(Funcionario.NormalizarEmail(email), ignorarId, ct))

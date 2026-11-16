@@ -6,6 +6,9 @@ namespace Locadora.Domain.Servicos;
 
 public class ClienteService(IClienteRepository clientes, ILocacaoRepository locacoes) : IClienteService
 {
+    public async Task<Cliente> ObterAsync(int id, CancellationToken ct) =>
+        await clientes.ObterPorIdAsync(id, ct) ?? throw new NaoEncontradoException("Cliente", id);
+
     public async Task GarantirCpfDisponivelAsync(string cpf, CancellationToken ct)
     {
         if (await clientes.ExisteCpfAsync(Cliente.NormalizarCpf(cpf), ct))

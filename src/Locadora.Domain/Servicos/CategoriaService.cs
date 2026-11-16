@@ -1,3 +1,4 @@
+using Locadora.Domain.Entidades;
 using Locadora.Domain.Excecoes;
 using Locadora.Domain.Interfaces;
 
@@ -5,6 +6,9 @@ namespace Locadora.Domain.Servicos;
 
 public class CategoriaService(ICategoriaRepository categorias, IVeiculoRepository veiculos) : ICategoriaService
 {
+    public async Task<Categoria> ObterAsync(int id, CancellationToken ct) =>
+        await categorias.ObterPorIdAsync(id, ct) ?? throw new NaoEncontradoException("Categoria", id);
+
     public async Task GarantirNomeDisponivelAsync(string nome, int? ignorarId, CancellationToken ct)
     {
         if (await categorias.ExisteNomeAsync(nome.Trim(), ignorarId, ct))
