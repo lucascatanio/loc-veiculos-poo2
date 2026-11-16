@@ -1,0 +1,10 @@
+<UserControl x:Class="Locadora.Desktop.Controles.MensagemErro"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Raiz" Visibility="{Binding Mensagem, ElementName=Raiz, Converter={StaticResource TextoPreenchido}}">
+    <Border Background="{StaticResource PapelBrush}" BorderBrush="{StaticResource SinalVermelhoBrush}"
+            BorderThickness="3,0,0,0" Padding="12,8">
+        <TextBlock Text="{Binding Mensagem, ElementName=Raiz}" TextWrapping="Wrap"
+                   Foreground="{StaticResource VermelhoEscuroBrush}"/>
+    </Border>
+</UserControl>

@@ -1,0 +1,12 @@
+<UserControl x:Class="Locadora.Desktop.Controles.EstadoVazio"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Raiz">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,32">
+        <TextBlock Style="{StaticResource TextoDestaque}" Foreground="{StaticResource TextoSecundarioBrush}"
+                   Text="{Binding Texto, ElementName=Raiz}" TextAlignment="Center" TextWrapping="Wrap" MaxWidth="360"/>
+        <Button Style="{StaticResource Primario}" HorizontalAlignment="Center" Margin="0,16,0,0"
+                Content="{Binding TextoAcao, ElementName=Raiz}" Command="{Binding Comando, ElementName=Raiz}"
+                Visibility="{Binding TextoAcao, ElementName=Raiz, Converter={StaticResource TextoPreenchido}}"/>
+    </StackPanel>
+</UserControl>

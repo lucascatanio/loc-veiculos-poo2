@@ -1,0 +1,15 @@
+<UserControl x:Class="Locadora.Desktop.Controles.CampoFormulario"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="Raiz">
+    <StackPanel>
+        <TextBlock Style="{StaticResource TextoMiudo}" Margin="0,0,0,4" Text="{Binding Rotulo, ElementName=Raiz}"/>
+        <ContentPresenter Content="{Binding Conteudo, ElementName=Raiz}"/>
+        <TextBlock Style="{StaticResource TextoMiudo}" Margin="0,4,0,0" TextWrapping="Wrap"
+                   Text="{Binding Ajuda, ElementName=Raiz}"
+                   Visibility="{Binding Ajuda, ElementName=Raiz, Converter={StaticResource TextoPreenchido}}"/>
+        <TextBlock Style="{StaticResource TextoMiudo}" Margin="0,4,0,0" TextWrapping="Wrap"
+                   Foreground="{StaticResource SinalVermelhoBrush}" Text="{Binding Erro, ElementName=Raiz}"
+                   Visibility="{Binding Erro, ElementName=Raiz, Converter={StaticResource TextoPreenchido}}"/>
+    </StackPanel>
+</UserControl>
