@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddScoped<IClienteAppService, ClienteAppService>();
         services.AddScoped<IVeiculoAppService, VeiculoAppService>();
         services.AddScoped<ILocacaoAppService, LocacaoAppService>();
+        services.AddScoped<IPainelAppService, PainelAppService>();
 
         return services;
     }

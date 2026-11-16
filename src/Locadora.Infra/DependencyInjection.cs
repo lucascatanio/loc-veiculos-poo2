@@ -1,4 +1,5 @@
 using Locadora.Domain.Interfaces;
+using Locadora.Infra.Consultas;
 using Locadora.Infra.Contexto;
 using Locadora.Infra.Repositorios;
 using Locadora.Infra.Seguranca;
@@ -18,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IClienteRepository, ClienteRepository>();
         services.AddScoped<IVeiculoRepository, VeiculoRepository>();
         services.AddScoped<ILocacaoRepository, LocacaoRepository>();
+        services.AddScoped<IPainelConsulta, PainelConsulta>();
         services.AddSingleton<IHashSenha, BCryptHashSenha>();
 
         return services;
