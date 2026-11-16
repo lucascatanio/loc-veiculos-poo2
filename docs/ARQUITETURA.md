@@ -70,7 +70,7 @@ POST /api/locacoes/{id}/pagamentos
 | O — Aberto/fechado | `Api/Middleware/ExcecaoHandler.cs` | Novo tipo de exceção entra no dicionário `Mapa`, sem novo `if` |
 | O — Aberto/fechado | `Infra/Contexto/LocadoraDbContext.cs` | `ApplyConfigurationsFromAssembly`: entidade nova não altera o DbContext |
 | L — Substituição de Liskov | `Api/Relogio/RelogioDeslocado.cs` | Substitui `TimeProvider.System` sem que nenhuma camada perceba |
-| I — Segregação de interfaces | `Domain/Interfaces` | _preencher: um repositório por agregado; `IPainelConsulta` separado da escrita_ |
+| I — Segregação de interfaces | `Domain/Interfaces` | Um repositório por agregado; `IPainelConsulta` (só leitura, SQL manual) fica separada de `ILocacaoRepository`, então o painel não depende de métodos de escrita |
 | D — Inversão de dependência | `Domain/Interfaces/IUnitOfWork.cs` → `Infra/Repositorios/UnitOfWork.cs` | Domain define, Infra implementa, `Infra/DependencyInjection.cs` liga. O `.csproj` do Domain não referencia nada |
 | D — Inversão de dependência | `Application/AppServices/FuncionarioAppService.cs`, `Api/Controllers/FuncionariosController.cs` | Cada camada depende da interface da camada de baixo (`IFuncionarioService`, `IFuncionarioAppService`), nunca da classe concreta |
 
@@ -85,7 +85,19 @@ POST /api/locacoes/{id}/pagamentos
 
 ## SQL manual
 
-_Preencher no card do painel:_ `Infra/Consultas/PainelConsulta.cs`, consultas parametrizadas via `Database.SqlQuery<T>`.
+Arquivo: `Infra/Consultas/PainelConsulta.cs`, que implementa `Domain/Interfaces/IPainelConsulta.cs`. Usa `context.Database.SqlQuery<T>($"...")` e materializa nos modelos de leitura de `Domain/Consultas` (`LocacaoAtrasadaItem`, `LocacaoVencendoItem`, `ContadorFrotaItem`, agrupados em `Painel`). Endpoint: `GET api/painel`.
+
+| Consulta | O que faz |
+|---|---|
+| Atrasadas | `Locacoes JOIN Clientes JOIN Veiculos` com `Status = 'Aberta'` e prevista anterior a `agora`. O SQL calcula `MinutosAtraso` (`DATEDIFF`), `DiasAtraso` (0 dentro da tolerância, senão `CEILING(minutos / 1440.0)`) e `MultaEstimada` (`DiasAtraso * ValorDiaria * (1 + taxa)`, 2 casas). Ordena pelo maior atraso |
+| Vencendo hoje | Abertas com prevista entre `agora` e o início de amanhã (`agora.Date.AddDays(1)`, calculado em C#), ordenadas pela prevista |
+| Frota | `COUNT(*) ... GROUP BY Status` dos veículos ativos |
+
+- **Parâmetros, não concatenação:** `SqlQuery` recebe `FormattableString`. Cada `{valor}` interpolado vira um `DbParameter` (`@p0`, `@p1`...), nunca texto do SQL, então não há injeção. `agora`, `TOLERANCIA_MINUTOS` e `TAXA_MULTA` entram assim; o SQL não tem número mágico.
+- **Regra de multa:** a tolerância e a taxa vêm das constantes de `Locacao`, as mesmas da devolução, para a estimativa do painel bater com a multa cobrada.
+- **Relógio:** a consulta recebe `agora` por parâmetro; só o `PainelAppService` lê o `TimeProvider`.
+- **ORDER BY no LINQ:** o EF embrulha o SQL em subconsulta, onde `ORDER BY` puro é inválido; por isso a ordenação é encadeada depois do `SqlQuery`.
+- **Interface separada (ISP):** `IPainelConsulta` só lê e devolve modelos de leitura, não entidades. Quem consome o painel não depende dos métodos de escrita de `ILocacaoRepository`, e a consulta pode mudar (ou virar view) sem tocar no repositório.
 
 ## Tradeoffs da arquitetura
 
