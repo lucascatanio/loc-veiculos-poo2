@@ -19,15 +19,17 @@ public class LocacaoAppService(
 
     public async Task<Locacao> AbrirAsync(
         int clienteId, int veiculoId, DateTime dataPrevista, string? observacao,
-        IReadOnlyList<EntradaPagamento> entradas, CancellationToken ct)
+        IReadOnlyList<(decimal Valor, string Forma)> entradas, CancellationToken ct)
     {
         var agora = relogio.GetLocalNow().DateTime;
         // O sistema grava horário local da loja sem fuso; datas com fuso no JSON são convertidas para ele.
         if (dataPrevista.Kind != DateTimeKind.Unspecified)
             dataPrevista = DateTime.SpecifyKind(dataPrevista.ToLocalTime(), DateTimeKind.Unspecified);
 
+        var entradasDominio = entradas.Select(e => new EntradaPagamento(e.Valor, e.Forma)).ToList();
+
         var locacao = await locacaoService.AbrirAsync(
-            clienteId, veiculoId, agora, dataPrevista, observacao, entradas, ct);
+            clienteId, veiculoId, agora, dataPrevista, observacao, entradasDominio, ct);
 
         locacoes.Adicionar(locacao);
         await unitOfWork.CommitAsync(ct);
@@ -35,11 +37,11 @@ public class LocacaoAppService(
         return locacao;
     }
 
-    public async Task<Locacao> RegistrarEntradaAsync(int id, EntradaPagamento entrada, CancellationToken ct)
+    public async Task<Locacao> RegistrarEntradaAsync(int id, decimal valor, string forma, CancellationToken ct)
     {
         var agora = relogio.GetLocalNow().DateTime;
 
-        var locacao = await locacaoService.RegistrarEntradaAsync(id, entrada, agora, ct);
+        var locacao = await locacaoService.RegistrarEntradaAsync(id, new EntradaPagamento(valor, forma), agora, ct);
         await unitOfWork.CommitAsync(ct);
 
         return locacao;
