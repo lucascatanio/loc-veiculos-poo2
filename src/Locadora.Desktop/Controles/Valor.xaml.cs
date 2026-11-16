@@ -64,7 +64,7 @@ public partial class Valor : UserControl
         Numero.FontFamily = (FontFamily)FindResource(Destaque ? "BarlowCondensedSemiBold" : "BarlowCondensedMedium");
         Numero.Foreground = (Brush)FindResource(Tom switch
         {
-            TomValor.Alerta => "FaixaAmarelaBrush",
+            TomValor.Alerta => "AtencaoTextoBrush",
             TomValor.Erro => "SinalVermelhoBrush",
             TomValor.Sucesso => "LiberadoBrush",
             _ => "AsfaltoBrush"

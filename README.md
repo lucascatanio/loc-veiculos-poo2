@@ -18,3 +18,9 @@ Se der erro de conexão com o banco, rode `sqllocaldb start MSSQLLocalDB`.
 
 - Roteiro de demonstração: [docs/DEMONSTRACAO.md](docs/DEMONSTRACAO.md)
 - Arquitetura, SOLID, Clean Code e SQL manual: [docs/ARQUITETURA.md](docs/ARQUITETURA.md)
+
+## Desenvolvimento
+
+Em Debug, o desktop aceita atalhos de linha de comando (ignorados em Release):
+`dotnet run --project src/Locadora.Desktop -- --login admin@locadora.local admin123` entra sozinho,
+e `--tela <Painel|Locacoes|Clientes|Veiculos|Categorias|Funcionarios>` abre direto nessa tela depois do login.

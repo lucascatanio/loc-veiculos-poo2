@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Locadora.Api.Dtos.Clientes;
 
 public record CriarClienteRequest(
-    [Required, MaxLength(120)] string Nome,
-    [Required, MaxLength(14)] string Cpf,
-    [Required, MaxLength(20)] string Cnh,
-    [Required, MaxLength(20)] string Telefone,
-    [RegularExpression(EmailOpcional.Padrao, ErrorMessage = "E-mail inválido."), MaxLength(150)] string? Email);
+    [Required(ErrorMessage = "Informe o nome."), MaxLength(120, ErrorMessage = "O nome pode ter no máximo 120 caracteres.")] string Nome,
+    [Required(ErrorMessage = "Informe o CPF."), MaxLength(14, ErrorMessage = "O CPF pode ter no máximo 14 caracteres.")] string Cpf,
+    [Required(ErrorMessage = "Informe a CNH."), MaxLength(20, ErrorMessage = "A CNH pode ter no máximo 20 caracteres.")] string Cnh,
+    [Required(ErrorMessage = "Informe o telefone."), MaxLength(20, ErrorMessage = "O telefone pode ter no máximo 20 caracteres.")] string Telefone,
+    [RegularExpression(EmailOpcional.Padrao, ErrorMessage = "E-mail inválido."), MaxLength(150, ErrorMessage = "O e-mail pode ter no máximo 150 caracteres.")] string? Email);

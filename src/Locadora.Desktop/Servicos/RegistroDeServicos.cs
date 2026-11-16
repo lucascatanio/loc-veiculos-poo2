@@ -1,3 +1,4 @@
+using Locadora.Desktop.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +18,14 @@ public static class RegistroDeServicos
         servicos.AddSingleton<Navegacao>();
         servicos.AddSingleton<INavegacao>(p => p.GetRequiredService<Navegacao>());
         servicos.AddSingleton<IDialogos, Dialogos>();
+        servicos.AddTransient<LoginViewModel>();
+        servicos.AddTransient<ShellViewModel>();
+        servicos.AddTransient<PainelViewModel>();
+        servicos.AddTransient<LocacoesViewModel>();
+        servicos.AddTransient<ClientesViewModel>();
+        servicos.AddTransient<VeiculosViewModel>();
+        servicos.AddTransient<CategoriasViewModel>();
+        servicos.AddTransient<FuncionariosViewModel>();
         return servicos;
     }
 }

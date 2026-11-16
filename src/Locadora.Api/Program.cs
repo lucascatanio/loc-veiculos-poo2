@@ -1,4 +1,6 @@
 using Locadora.Api.Auth;
+using Locadora.Api.Validacao;
+using Microsoft.AspNetCore.Mvc;
 using Locadora.Api.Mapeamento;
 using Locadora.Api.Middleware;
 using Locadora.Api.Relogio;
@@ -7,7 +9,10 @@ using Locadora.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.ConfigurarMensagensEmPortugues())
+    .AddJsonOptions(options => options.AllowInputFormatterExceptionMessages = false);
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+    options.InvalidModelStateResponseFactory = ValidacaoPtBr.CriarRespostaInvalida);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => options.AddSwaggerComBearer());
 builder.Services.AddAutenticacaoJwt(builder.Configuration);
