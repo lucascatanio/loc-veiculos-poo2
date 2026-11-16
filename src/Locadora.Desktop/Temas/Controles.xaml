@@ -286,6 +286,23 @@
         </Setter>
     </Style>
 
+    <!-- O template padrão do DatePickerTextBox exibe "Select a date" como marca d'água; este não tem marca -->
+    <Style TargetType="DatePickerTextBox">
+        <Setter Property="FontFamily" Value="{StaticResource Barlow}"/>
+        <Setter Property="Padding" Value="10,0"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DatePickerTextBox">
+                    <ScrollViewer x:Name="PART_ContentHost" Padding="{TemplateBinding Padding}" Focusable="False"
+                                  HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="DatePicker">
         <Setter Property="FontFamily" Value="{StaticResource Barlow}"/>
         <Setter Property="FontSize" Value="14"/>

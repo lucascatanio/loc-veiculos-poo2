@@ -6,8 +6,10 @@ namespace Locadora.Desktop.Conversores;
 
 public class TextoParaVisibilidade : IValueConverter
 {
+    public bool Inverter { get; set; }
+
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
-        string.IsNullOrEmpty(value as string) ? Visibility.Collapsed : Visibility.Visible;
+        string.IsNullOrWhiteSpace(value as string) == Inverter ? Visibility.Visible : Visibility.Collapsed;
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
         throw new NotSupportedException();

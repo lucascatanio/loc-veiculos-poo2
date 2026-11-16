@@ -3,49 +3,49 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:comp="clr-namespace:Locadora.Desktop.Comportamentos"
              Style="{StaticResource TelaBase}" Loaded="AoCarregar">
+    <!-- Mesma coluna e mesmo cabeçalho do Shell: ao entrar, só o menu aparece na coluna que já estava ali. -->
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5*"/>
-            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Border Background="{StaticResource AsfaltoBrush}">
-            <Grid Margin="64,0,48,56">
-                <StackPanel VerticalAlignment="Center">
-                    <Rectangle Width="56" Height="6" HorizontalAlignment="Left" Fill="{StaticResource FaixaAmarelaBrush}"/>
-                    <TextBlock Style="{StaticResource TextoTitulo}" FontSize="52" Margin="0,20,0,0"
+            <Grid>
+                <StackPanel Margin="20,24,20,24" VerticalAlignment="Top">
+                    <Rectangle Width="32" Height="4" HorizontalAlignment="Left" Fill="{StaticResource FaixaAmarelaBrush}"/>
+                    <TextBlock Style="{StaticResource TextoSubtitulo}" Margin="0,8,0,0"
                                Foreground="{StaticResource PapelBrush}" Text="Locadora"/>
-                    <TextBlock Style="{StaticResource TextoSubtitulo}" FontFamily="{StaticResource Barlow}" Margin="0,8,0,0"
-                               Foreground="{StaticResource DesabilitadoBrush}" Text="Balcão de retirada e devolução"/>
                 </StackPanel>
-                <TextBlock Style="{StaticResource TextoMiudo}" VerticalAlignment="Bottom"
-                           Foreground="{StaticResource DesabilitadoBrush}" Text="Acesso restrito aos funcionários"/>
+                <TextBlock Style="{StaticResource TextoMiudo}" Margin="20,0,20,20" VerticalAlignment="Bottom"
+                           TextWrapping="Wrap" Foreground="{StaticResource DesabilitadoBrush}"
+                           Text="Balcão de retirada e devolução"/>
             </Grid>
         </Border>
 
-        <Grid Grid.Column="1">
-            <StackPanel Width="340" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Style="{StaticResource TextoTitulo}" Text="Entrar"/>
+        <StackPanel Grid.Column="1" Margin="32" Width="360" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock Style="{StaticResource TextoTitulo}" Text="Entrar no balcão"/>
+            <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,4,0,0"
+                       Text="Use o e-mail e a senha cadastrados para você."/>
 
-                <Border Margin="0,16,0,0" Padding="12,8" Background="{StaticResource PapelBrush}"
-                        BorderBrush="{StaticResource FaixaAmarelaBrush}" BorderThickness="4,0,0,0"
-                        Visibility="{Binding Aviso, Converter={StaticResource TextoParaVisibilidade}}">
-                    <TextBlock TextWrapping="Wrap" Text="{Binding Aviso}"/>
-                </Border>
+            <Border Margin="0,20,0,0" Padding="12,8" Background="{StaticResource PapelBrush}"
+                    BorderBrush="{StaticResource FaixaAmarelaBrush}" BorderThickness="4,0,0,0"
+                    Visibility="{Binding Aviso, Converter={StaticResource TextoPreenchido}}">
+                <TextBlock TextWrapping="Wrap" Text="{Binding Aviso}"/>
+            </Border>
 
-                <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,24,0,4" Text="E-mail"/>
-                <TextBox x:Name="CampoEmail" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,28,0,4" Text="E-mail"/>
+            <TextBox x:Name="CampoEmail" Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,16,0,4" Text="Senha"/>
-                <PasswordBox comp:SenhaVinculada.Senha="{Binding Senha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,16,0,4" Text="Senha"/>
+            <PasswordBox comp:SenhaVinculada.Senha="{Binding Senha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <TextBlock Margin="0,12,0,0" TextWrapping="Wrap" Foreground="{StaticResource SinalVermelhoBrush}"
-                           Text="{Binding MensagemErro}"
-                           Visibility="{Binding MensagemErro, Converter={StaticResource TextoParaVisibilidade}}"/>
+            <TextBlock Margin="0,12,0,0" TextWrapping="Wrap" Foreground="{StaticResource SinalVermelhoBrush}"
+                       Text="{Binding MensagemErro}"
+                       Visibility="{Binding MensagemErro, Converter={StaticResource TextoPreenchido}}"/>
 
-                <Button Style="{StaticResource Primario}" Margin="0,24,0,0" IsDefault="True"
-                        Content="Entrar" Command="{Binding EntrarCommand}"/>
-            </StackPanel>
-        </Grid>
+            <Button Style="{StaticResource Primario}" Margin="0,24,0,0" IsDefault="True" HorizontalAlignment="Left"
+                    MinWidth="140" Content="Entrar" Command="{Binding EntrarCommand}"/>
+        </StackPanel>
     </Grid>
 </UserControl>

@@ -1,0 +1,95 @@
+﻿<Window x:Class="Locadora.Desktop.Desenvolvimento.GaleriaComponentes"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:Locadora.Desktop.Controles"
+        Style="{StaticResource JanelaBase}"
+        Title="Galeria de componentes" WindowState="Maximized" Height="900" Width="1000" MinHeight="560" MinWidth="720">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="32" MaxWidth="900"  HorizontalAlignment="Left">
+
+            <TextBlock Style="{StaticResource TextoTitulo}" Text="Componentes"/>
+            <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,4,0,0"
+                       Text="Abra com --galeria (só em Debug) para revisar os componentes."/>
+
+            <Border Background="{StaticResource PapelBrush}" Padding="24" Margin="0,24,0,0">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextoMiudo}" Text="Placas"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <c:PlacaMercosul Placa="BRA2E19"/>
+                        <c:PlacaMercosul Placa="abc-1234" Margin="24,0,0,0"/>
+                        <c:PlacaMercosul Placa="RIO4F77" Margin="24,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                        <c:PlacaMercosul Placa="BRA2E19" Tamanho="Grande"/>
+                        <c:PlacaMercosul Placa="ABC1234" Tamanho="Grande" Margin="24,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{StaticResource PapelBrush}" Padding="24" Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextoMiudo}" Text="Status"/>
+                    <WrapPanel Margin="0,12,0,0">
+                        <c:StatusSelo Status="Disponivel" Margin="0,0,24,8"/>
+                        <c:StatusSelo Status="Locado" Margin="0,0,24,8"/>
+                        <c:StatusSelo Status="Manutencao" Margin="0,0,24,8"/>
+                        <c:StatusSelo Status="Aberta" Margin="0,0,24,8"/>
+                        <c:StatusSelo Status="Finalizada" Margin="0,0,24,8"/>
+                        <c:StatusSelo Status="Cancelada" Margin="0,0,24,8"/>
+                        <c:StatusSelo Status="Atrasada" Margin="0,0,24,8"/>
+                        <c:StatusSelo Status="Inativo" Margin="0,0,24,8"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{StaticResource PapelBrush}" Padding="24" Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextoMiudo}" Text="Valores"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <c:Valor Quantia="129.90"/>
+                        <c:Valor Quantia="1284.50" Rotulo="saldo" Margin="32,0,0,0"/>
+                        <c:Valor Quantia="1284.50" Rotulo="saldo" Destaque="True" Margin="32,0,0,0"/>
+                        <c:Valor Quantia="45" Rotulo="multa" Tom="Alerta" Margin="32,0,0,0"/>
+                        <c:Valor Quantia="-320" Rotulo="atraso" Tom="Erro" Destaque="True" Margin="32,0,0,0"/>
+                        <c:Valor Quantia="500" Rotulo="pago" Tom="Sucesso" Margin="32,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{StaticResource PapelBrush}" Padding="24" Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextoMiudo}" Text="Mensagem de erro"/>
+                    <c:MensagemErro Margin="0,12,0,0" Mensagem="O veículo não está disponível para locação."/>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{StaticResource PapelBrush}" Padding="24" Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextoMiudo}" Text="Busca"/>
+                    <c:BarraBusca Margin="0,12,0,0"/>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{StaticResource PapelBrush}" Padding="24" Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextoMiudo}" Text="Campos de formulário"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <c:CampoFormulario Rotulo="Nome" Ajuda="Como no documento." Width="240" Margin="0,0,16,0">
+                            <TextBox/>
+                        </c:CampoFormulario>
+                        <c:CampoFormulario Rotulo="CPF" Erro="CPF inválido." Width="180" Margin="0,0,16,0">
+                            <TextBox Text="123.456"/>
+                        </c:CampoFormulario>
+                        <c:CampoFormulario Rotulo="Devolução prevista" Width="160">
+                            <DatePicker/>
+                        </c:CampoFormulario>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{StaticResource PapelBrush}" Margin="0,16,0,0" Height="180">
+                <c:EstadoVazio Texto="Nenhum cliente cadastrado. Cadastre o primeiro para começar." TextoAcao="Novo cliente"/>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Window>

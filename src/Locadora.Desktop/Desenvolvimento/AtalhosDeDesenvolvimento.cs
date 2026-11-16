@@ -3,11 +3,14 @@ using Locadora.Desktop.ViewModels;
 
 namespace Locadora.Desktop.Desenvolvimento;
 
-// --login <email> <senha> entra sozinho; --tela <Painel|Locacoes|Clientes|Veiculos|Categorias|Funcionarios> abre direto nela.
+// --login <email> <senha> entra sozinho; --tela <Painel|Locacoes|Clientes|Veiculos|Categorias|Funcionarios> abre direto nela; --galeria abre a galeria de componentes.
 public static class AtalhosDeDesenvolvimento
 {
     public static async Task AplicarAsync(MainViewModel principal, string[] args)
     {
+        if (args.Contains("--galeria"))
+            new GaleriaComponentes().Show();
+
         var iLogin = Array.IndexOf(args, "--login");
         if (iLogin < 0 || iLogin + 2 >= args.Length || principal.Conteudo is not LoginViewModel login) return;
 
