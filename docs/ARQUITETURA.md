@@ -55,6 +55,7 @@ POST /api/locacoes/{id}/pagamentos
 - **Enums vindos do HTTP:** chegam como `string` (no corpo e na query) e são convertidos no Domain por `Domain/Enums/ConversorEnum.Converter<T>`, que aceita o nome sem diferenciar maiúsculas e recusa números ("7"). Valor inválido → `DomainException` (422) com os nomes aceitos na mensagem. Controllers e DTOs não referenciam enums do Domain.
 - **Parâmetros compostos:** dados de entrada que o Domain recebe agrupados (ex.: `EntradaPagamento`) são `record`s em `Domain/Valores`, nunca tuplas.
 - **Erros:** regra violada → `DomainException` (422). Registro inexistente → `NaoEncontradoException` (404). Concorrência → `ConflitoConcorrenciaException` (409). Quem converte é `Api/Middleware/ExcecaoHandler.cs`, que devolve ProblemDetails; o WPF exibe o campo `detail`.
+- **Concorrência otimista:** `Veiculos` e `Locacoes` têm coluna `rowversion` (shadow property `RowVersion`, só no mapeamento da Infra). Duas alterações simultâneas do mesmo registro (pagamentos na mesma locação, aberturas do mesmo veículo) fazem a segunda falhar com 409: "O registro foi alterado por outro funcionário...".
 - **Data e hora:** só o AppService lê o relógio (`TimeProvider` injetado) e passa a data para a entidade. Em Development, `Relogio:DeslocamentoHoras` no `appsettings.Development.json` adianta o relógio para demonstrar multa e tolerância.
 - **Dinheiro:** todo `decimal` vira `decimal(10,2)` por convenção no `LocadoraDbContext`.
 - **Exclusão:** não existe DELETE. Registros são inativados (`Ativo = false`) e podem ser reativados.

@@ -20,6 +20,9 @@ public class VeiculoMapeamento : IEntityTypeConfiguration<Veiculo>
         builder.Property(v => v.Status).IsRequired().HasConversion<string>().HasMaxLength(20);
         builder.Property(v => v.Ativo).IsRequired();
 
+        // Concorrência otimista: dois funcionários alterando o mesmo veículo → o segundo recebe 409.
+        builder.Property<byte[]>("RowVersion").IsRowVersion();
+
         builder.HasIndex(v => v.Placa).IsUnique();
 
         builder.HasOne(v => v.Categoria)
