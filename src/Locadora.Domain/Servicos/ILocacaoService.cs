@@ -9,6 +9,10 @@ public interface ILocacaoService
     Task<Locacao> ObterAsync(int id, CancellationToken ct);
     Task<Locacao> AbrirAsync(
         int clienteId, int veiculoId, DateTime dataRetirada, DateTime dataPrevista, string? observacao,
-        IReadOnlyList<EntradaPagamento> entradas, CancellationToken ct);
-    Task<Locacao> RegistrarEntradaAsync(int id, EntradaPagamento entrada, DateTime dataPagamento, CancellationToken ct);
+        IReadOnlyList<PagamentoInformado> entradas, CancellationToken ct);
+    Task<Locacao> RegistrarEntradaAsync(int id, PagamentoInformado entrada, DateTime dataPagamento, CancellationToken ct);
+    Task<PreviaDevolucao> ObterPreviaAsync(int id, DateTime dataDevolucao, CancellationToken ct);
+    Task<Locacao> FinalizarAsync(
+        int id, DateTime dataDevolucao, int kmDevolucao, string? observacao,
+        IReadOnlyList<PagamentoInformado> saidas, CancellationToken ct);
 }

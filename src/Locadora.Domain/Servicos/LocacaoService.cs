@@ -25,7 +25,7 @@ public class LocacaoService(
 
     public async Task<Locacao> AbrirAsync(
         int clienteId, int veiculoId, DateTime dataRetirada, DateTime dataPrevista, string? observacao,
-        IReadOnlyList<EntradaPagamento> entradas, CancellationToken ct)
+        IReadOnlyList<PagamentoInformado> entradas, CancellationToken ct)
     {
         var cliente = await clienteService.ObterAsync(clienteId, ct);
         if (!cliente.Ativo)
@@ -44,11 +44,31 @@ public class LocacaoService(
     }
 
     public async Task<Locacao> RegistrarEntradaAsync(
-        int id, EntradaPagamento entrada, DateTime dataPagamento, CancellationToken ct)
+        int id, PagamentoInformado entrada, DateTime dataPagamento, CancellationToken ct)
     {
         var locacao = await ObterAsync(id, ct);
 
         locacao.RegistrarPagamento(Pagamento.CriarEntrada(entrada.Valor, entrada.Forma, dataPagamento));
+
+        return locacao;
+    }
+
+    public async Task<PreviaDevolucao> ObterPreviaAsync(int id, DateTime dataDevolucao, CancellationToken ct)
+    {
+        var locacao = await ObterAsync(id, ct);
+        return locacao.CalcularPrevia(dataDevolucao);
+    }
+
+    public async Task<Locacao> FinalizarAsync(
+        int id, DateTime dataDevolucao, int kmDevolucao, string? observacao,
+        IReadOnlyList<PagamentoInformado> saidas, CancellationToken ct)
+    {
+        var locacao = await ObterAsync(id, ct);
+
+        var pagamentos = saidas
+            .Select(s => Pagamento.CriarSaida(s.Valor, s.Forma, dataDevolucao))
+            .ToList();
+        locacao.Finalizar(dataDevolucao, kmDevolucao, observacao, pagamentos);
 
         return locacao;
     }

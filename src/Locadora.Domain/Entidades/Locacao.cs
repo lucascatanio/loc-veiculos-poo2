@@ -1,6 +1,7 @@
 using System.Globalization;
 using Locadora.Domain.Enums;
 using Locadora.Domain.Excecoes;
+using Locadora.Domain.Valores;
 
 namespace Locadora.Domain.Entidades;
 
@@ -69,6 +70,68 @@ public class Locacao
 
         _pagamentos.Add(pagamento);
         ValorPago += pagamento.Valor;
+    }
+
+    public int DiariasContratadas() => ContarDiarias(DataRetirada, DataPrevistaDevolucao);
+
+    public int CalcularDiasAtraso(DateTime dataDevolucao)
+    {
+        var excesso = dataDevolucao - DataPrevistaDevolucao;
+        return excesso.TotalMinutes <= TOLERANCIA_MINUTOS ? 0 : (int)Math.Ceiling(excesso.TotalHours / 24);
+    }
+
+    public decimal CalcularMulta(DateTime dataDevolucao) =>
+        Math.Round(CalcularDiasAtraso(dataDevolucao) * ValorDiaria * (1 + TAXA_MULTA), 2, MidpointRounding.AwayFromZero);
+
+    public decimal CalcularValorTotal(DateTime dataDevolucao) => ValorPrevisto + CalcularMulta(dataDevolucao);
+
+    public PreviaDevolucao CalcularPrevia(DateTime dataDevolucao)
+    {
+        if (Status != StatusLocacao.Aberta)
+            throw new DomainException("Só é possível calcular a prévia de locação aberta.");
+
+        var multa = CalcularMulta(dataDevolucao);
+        var total = ValorPrevisto + multa;
+        return new PreviaDevolucao(
+            DiariasContratadas(), CalcularDiasAtraso(dataDevolucao), ValorPrevisto, multa, total, ValorPago, total - ValorPago);
+    }
+
+    public void Finalizar(DateTime dataDevolucao, int kmDevolucao, string? observacao, IReadOnlyList<Pagamento> saidas)
+    {
+        if (Status != StatusLocacao.Aberta)
+            throw new DomainException("Só é possível finalizar locação aberta.");
+        if (kmDevolucao < KmRetirada)
+            throw new DomainException("Km de devolução menor que o de retirada.");
+        if (saidas.Any(s => s.Tipo != TipoPagamento.Saida))
+            throw new DomainException("Os pagamentos da finalização devem ser do tipo saída.");
+
+        var multa = CalcularMulta(dataDevolucao);
+        var total = ValorPrevisto + multa;
+        var saldo = total - ValorPago;
+        var diferenca = saldo - saidas.Sum(s => s.Valor);
+        if (diferenca != 0)
+        {
+            var cultura = new CultureInfo("pt-BR");
+            var detalhe = diferenca > 0
+                ? $"Falta R$ {diferenca.ToString("N2", cultura)}."
+                : $"Sobra R$ {(-diferenca).ToString("N2", cultura)}.";
+            throw new DomainException(
+                $"Os pagamentos de saída devem fechar o saldo de R$ {saldo.ToString("N2", cultura)}. {detalhe}");
+        }
+
+        Veiculo.Liberar(kmDevolucao);
+
+        ValorMulta = multa;
+        ValorTotal = total;
+        foreach (var saida in saidas)
+        {
+            _pagamentos.Add(saida);
+            ValorPago += saida.Valor;
+        }
+        DataDevolucao = dataDevolucao;
+        KmDevolucao = kmDevolucao;
+        ObservacaoDevolucao = string.IsNullOrWhiteSpace(observacao) ? null : observacao.Trim();
+        Status = StatusLocacao.Finalizada;
     }
 
     private static int ContarDiarias(DateTime inicio, DateTime fim) =>
