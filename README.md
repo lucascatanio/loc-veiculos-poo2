@@ -16,4 +16,5 @@
 
 Se der erro de conexão com o banco, rode `sqllocaldb start MSSQLLocalDB`.
 
-Arquitetura e padrões: [docs/ARQUITETURA.md](docs/ARQUITETURA.md).
+- Roteiro de demonstração: [docs/DEMONSTRACAO.md](docs/DEMONSTRACAO.md)
+- Arquitetura, SOLID, Clean Code e SQL manual: [docs/ARQUITETURA.md](docs/ARQUITETURA.md)

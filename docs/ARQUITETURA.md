@@ -82,7 +82,13 @@ POST /api/locacoes/{id}/pagamentos
 | Exceções com mensagem de negócio em vez de códigos de erro | `Domain/Excecoes` |
 | Tradução de exceção técnica na fronteira (EF não vaza) | `Infra/Repositorios/UnitOfWork.cs` |
 | Configuração em vez de número mágico | `Program.cs` (`CriarRelogio`), `appsettings*.json` |
-| _preencher ao implementar: nomes que revelam intenção, constantes `TAXA_MULTA`/`TOLERANCIA_MINUTOS`, guard clauses, `private set`_ | |
+| Nomes que revelam intenção: `PodeSerLocado()`, `SaldoDevedor()`, `CalcularDiasAtraso()`, `GarantirCpfDisponivelAsync()`, `CancelarAlocacao()` | `Domain/Entidades`, `Domain/Servicos` |
+| Constantes nomeadas em vez de números mágicos, reaproveitadas até no SQL manual | `Locacao.TAXA_MULTA` e `Locacao.TOLERANCIA_MINUTOS` → `Infra/Consultas/PainelConsulta.cs` |
+| Guard clauses: valida e sai cedo, sem `if` aninhado; validações antes de qualquer mudança de estado | `Locacao.Finalizar`, `Locacao.Prorrogar`, `Veiculo.Alocar` |
+| Encapsulamento: `private set` em todas as entidades, coleção exposta como `IReadOnlyCollection` | `Locacao.Pagamentos` (backing field `_pagamentos`) |
+| Funções pequenas com uma responsabilidade; AppServices de 3 a 5 linhas por caso de uso | `Application/AppServices/LocacaoAppService.cs` |
+| Sem duplicação: conversão de enum e normalização de dados num lugar só | `Domain/Enums/ConversorEnum.cs`, `Cliente.NormalizarCpf`, `Funcionario.NormalizarEmail`, `Veiculo.NormalizarPlaca` |
+| Comentários só onde o código não explica o porquê | ex.: `DATEDIFF` em segundos no `PainelConsulta`, relógio real no `JwtTokenService` |
 
 ## SQL manual
 
@@ -108,7 +114,11 @@ Arquivo: `Infra/Consultas/PainelConsulta.cs`, que implementa `Domain/Interfaces/
 | Entidade chega até o Controller | Sem classes intermediárias na Application | O Controller precisa conhecer a forma da entidade para mapear |
 | Repositório por agregado + UnitOfWork | Domain sem EF; commit controlado pelo AppService | Mais interfaces que usar o DbContext direto |
 | Relógio injetado | Regras de tempo demonstráveis e determinísticas | Toda chamada com data precisa receber o "agora" |
-| Sem testes automatizados | Menos escopo | Regras de cálculo validadas manualmente pelo Swagger |
+| Sem testes automatizados | Menos escopo | Regras de cálculo validadas manualmente pelo Swagger (roteiro em [DEMONSTRACAO.md](DEMONSTRACAO.md)) |
+| Concorrência otimista (`rowversion`) | Sem lock no banco; o caso comum não espera | O segundo funcionário recebe 409 e precisa repetir a operação |
+| `ValorPago` guardado na locação | Listagem e saldo sem somar pagamentos | Dado duplicado; só muda em `RegistrarPagamento` e `Finalizar`, protegido pelo `rowversion` |
+| Enums de negócio convertidos no Domain | Uma regra só para corpo e query; mensagem em português com os valores aceitos | Valor inválido é 422 (regra), não 400 (formato) |
+| Painel em SQL manual | Atende o enunciado; cálculo de atraso numa consulta só | Regra de multa existe em dois lugares (entidade e SQL); as constantes são compartilhadas para não divergir |
 
 ## Desvios do enunciado
 
