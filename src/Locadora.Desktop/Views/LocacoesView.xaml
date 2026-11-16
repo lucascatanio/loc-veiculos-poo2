@@ -1,0 +1,9 @@
+<UserControl x:Class="Locadora.Desktop.Views.LocacoesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Style="{StaticResource TelaBase}">
+    <StackPanel Margin="32">
+        <TextBlock Style="{StaticResource TextoTitulo}" Text="{Binding Titulo}"/>
+        <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,4,0,0" Text="Esta tela chega no card Fxx."/>
+    </StackPanel>
+</UserControl>
