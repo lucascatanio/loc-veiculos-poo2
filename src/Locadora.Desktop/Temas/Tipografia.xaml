@@ -1,0 +1,55 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+
+    <FontFamily x:Key="Barlow">pack://application:,,,/Fontes/#Barlow</FontFamily>
+    <FontFamily x:Key="BarlowMedium">pack://application:,,,/Fontes/#Barlow Medium</FontFamily>
+    <FontFamily x:Key="BarlowSemiBold">pack://application:,,,/Fontes/#Barlow SemiBold</FontFamily>
+    <FontFamily x:Key="BarlowCondensedMedium">pack://application:,,,/Fontes/#Barlow Condensed Medium</FontFamily>
+    <FontFamily x:Key="BarlowCondensedSemiBold">pack://application:,,,/Fontes/#Barlow Condensed SemiBold</FontFamily>
+
+    <system:Double x:Key="TamanhoMiudo">12</system:Double>
+    <system:Double x:Key="TamanhoCorpo">14</system:Double>
+    <system:Double x:Key="TamanhoDestaque">16</system:Double>
+    <system:Double x:Key="TamanhoSubtitulo">20</system:Double>
+    <system:Double x:Key="TamanhoTitulo">28</system:Double>
+
+    <Style TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Barlow}"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+
+    <Style x:Key="TextoMiudo" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{StaticResource TextoSecundarioBrush}"/>
+    </Style>
+    <Style x:Key="TextoCorpo" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}"/>
+    <Style x:Key="TextoSecundario" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="Foreground" Value="{StaticResource TextoSecundarioBrush}"/>
+    </Style>
+    <Style x:Key="TextoDestaque" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="FontFamily" Value="{StaticResource BarlowMedium}"/>
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+    <Style x:Key="TextoSubtitulo" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="FontFamily" Value="{StaticResource BarlowSemiBold}"/>
+        <Setter Property="FontSize" Value="20"/>
+    </Style>
+    <Style x:Key="TextoTitulo" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="FontFamily" Value="{StaticResource BarlowSemiBold}"/>
+        <Setter Property="FontSize" Value="28"/>
+    </Style>
+
+    <Style x:Key="Placa" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="FontFamily" Value="{StaticResource BarlowCondensedSemiBold}"/>
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+    <Style x:Key="Valor" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="FontFamily" Value="{StaticResource BarlowCondensedMedium}"/>
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+    <Style x:Key="NumeroGrande" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+        <Setter Property="FontFamily" Value="{StaticResource BarlowCondensedSemiBold}"/>
+        <Setter Property="FontSize" Value="28"/>
+    </Style>
+</ResourceDictionary>

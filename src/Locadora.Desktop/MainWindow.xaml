@@ -1,12 +1,72 @@
 ﻿<Window x:Class="Locadora.Desktop.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Locadora.Desktop"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Style="{StaticResource JanelaBase}"
+        Title="Locadora" Height="640" Width="900" MinHeight="560" MinWidth="720">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="32" MaxWidth="780" HorizontalAlignment="Left">
 
-    </Grid>
+            <TextBlock Style="{StaticResource TextoTitulo}" Text="Locadora"/>
+            <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,4,0,0"
+                       Text="Validação da fundação do tema. Esta janela será substituída."/>
+
+            <Border Background="{StaticResource PapelBrush}" Padding="24" Margin="0,24,0,0">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextoMiudo}" Text="Tipografia"/>
+                    <TextBlock Style="{StaticResource TextoSubtitulo}" Margin="0,8,0,0" Text="Barlow 20 · Locações em aberto"/>
+                    <TextBlock Style="{StaticResource TextoDestaque}" Margin="0,4,0,0" Text="Barlow Medium 16 · Retirada prevista para amanhã"/>
+                    <TextBlock Margin="0,4,0,0" Text="Barlow 14 · Texto de corpo para formulários, tabelas e mensagens."/>
+                    <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,4,0,0" Text="Barlow 14 secundário · Cliente sem telefone cadastrado"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                        <TextBlock Style="{StaticResource Placa}" FontSize="28" Text="BRA2E19" VerticalAlignment="Bottom"/>
+                        <TextBlock Style="{StaticResource NumeroGrande}" Margin="24,0,0,0" Text="1.284,50" VerticalAlignment="Bottom"/>
+                        <TextBlock Style="{StaticResource Valor}" Margin="24,0,0,0" Text="Barlow Condensed Medium 16" VerticalAlignment="Bottom"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Background="{StaticResource PapelBrush}" Padding="24" Margin="0,16,0,0">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource TextoMiudo}" Text="Botões e campos"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <Button Style="{StaticResource Primario}" Content="Abrir locação" Margin="0,0,8,0"/>
+                        <Button Content="Cancelar" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource Perigo}" Content="Cancelar locação" Margin="0,0,8,0"/>
+                        <Button Style="{StaticResource Link}" Content="Ver histórico" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                        <Button Content="Desabilitado" IsEnabled="False" Margin="16,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <TextBox Width="200" Text="Busca por nome" Margin="0,0,8,0"/>
+                        <ComboBox Width="160" SelectedIndex="0" Margin="0,0,8,0">
+                            <ComboBoxItem Content="Econômico"/>
+                            <ComboBoxItem Content="SUV"/>
+                        </ComboBox>
+                        <DatePicker Width="140" Margin="0,0,16,0"/>
+                        <CheckBox Content="Incluir inativos" IsChecked="True" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <ListView x:Name="Lista" Margin="0,16,0,0" SelectedIndex="1">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="120"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource Placa}" Text="{Binding Placa}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Modelo}"/>
+                            <TextBlock Grid.Column="2" Text="{Binding Status}" FontFamily="{StaticResource BarlowMedium}"
+                                       Foreground="{Binding Status, Converter={StaticResource StatusParaBrush}}"/>
+                            <TextBlock Grid.Column="3" Style="{StaticResource Valor}" HorizontalAlignment="Right"
+                                       Text="{Binding Diaria, Converter={StaticResource MoedaBr}}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+    </ScrollViewer>
 </Window>

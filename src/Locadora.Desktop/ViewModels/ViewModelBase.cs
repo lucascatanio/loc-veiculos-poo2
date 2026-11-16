@@ -1,0 +1,32 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using Locadora.Desktop.Servicos;
+
+namespace Locadora.Desktop.ViewModels;
+
+public abstract partial class ViewModelBase : ObservableObject
+{
+    [ObservableProperty]
+    private bool _ocupado;
+
+    [ObservableProperty]
+    private string? _mensagemErro;
+
+    // Falha de conexão chega aqui como ApiException de Status 0, já com a mensagem sobre a URL da API.
+    protected async Task ExecutarAsync(Func<Task> acao)
+    {
+        Ocupado = true;
+        MensagemErro = null;
+        try
+        {
+            await acao();
+        }
+        catch (ApiException ex)
+        {
+            MensagemErro = ex.Detalhe;
+        }
+        finally
+        {
+            Ocupado = false;
+        }
+    }
+}
