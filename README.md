@@ -11,10 +11,12 @@
    dotnet build Locadora.sln
    dotnet ef database update -p src/Locadora.Infra -s src/Locadora.Api
    ```
-3. Clique com o botão direito na solução → *Configurar Projetos de Inicialização* → *Vários projetos de inicialização*: **Locadora.Api** e **Locadora.Desktop** como *Iniciar* (a Api primeiro). Aperte **F5**.
+3. No seletor ao lado do botão ▶, escolha o perfil **API + Desktop** e aperte **F5**. Ele vem pronto no `Locadora.slnLaunch` e sobe a API e o app juntos.
 4. No app, entre com `admin@locadora.local` / `admin123`.
 
 O Swagger da API fica em `http://localhost:5056/swagger` (login em `POST /api/auth/login`, depois **Authorize** com o token).
+
+Se o perfil não aparecer, ative em *Ferramentas → Opções → Versão Prévia de Recursos → Enable Multi Launch Profiles* ou configure à mão: botão direito na solução → *Configurar Projetos de Inicialização* → *Vários projetos de inicialização*, com **Locadora.Api** e **Locadora.Desktop** em *Iniciar*.
 
 Se der erro de conexão com o banco, rode `sqllocaldb start MSSQLLocalDB`.
 

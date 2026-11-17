@@ -1,0 +1,16 @@
+[
+  {
+    "Name": "API + Desktop",
+    "Projects": [
+      {
+        "Path": "src\\Locadora.Api\\Locadora.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      },
+      {
+        "Path": "src\\Locadora.Desktop\\Locadora.Desktop.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
