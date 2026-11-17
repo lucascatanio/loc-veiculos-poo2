@@ -9,24 +9,25 @@ namespace Locadora.Desktop.ViewModels.Locacoes;
 public partial class LocacaoDetalheViewModel : ViewModelBase
 {
     private const string FormatoDeData = "dd/MM/yyyy HH:mm";
+    private const string MensagemDeCancelamento =
+        "O veículo volta a ficar disponível. As entradas já pagas continuam registradas; o estorno é feito fora do sistema.";
     private static readonly CultureInfo PtBr = CultureInfo.GetCultureInfo("pt-BR");
 
     private readonly IApiClient _api;
     private readonly INavegacao _navegacao;
+    private readonly IDialogos _dialogos;
 
-    public LocacaoDetalheViewModel(IApiClient api, INavegacao navegacao)
+    public LocacaoDetalheViewModel(IApiClient api, INavegacao navegacao, IDialogos dialogos)
     {
         _api = api;
         _navegacao = navegacao;
+        _dialogos = dialogos;
         Entrada = new LancamentoDeEntradaViewModel(api, Aplicar);
+        Prorrogacao = new ProrrogacaoViewModel(api, Aplicar);
     }
 
     public LancamentoDeEntradaViewModel Entrada { get; }
-
-    // Serão ligados quando as telas de prorrogação, devolução e cancelamento existirem.
-    public IRelayCommand ProrrogarCommand { get; } = ComandoIndisponivel.Criar();
-    public IRelayCommand RegistrarDevolucaoCommand { get; } = ComandoIndisponivel.Criar();
-    public IRelayCommand CancelarCommand { get; } = ComandoIndisponivel.Criar();
+    public ProrrogacaoViewModel Prorrogacao { get; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Carregada), nameof(EstaAberta))]
@@ -57,10 +58,24 @@ public partial class LocacaoDetalheViewModel : ViewModelBase
     [RelayCommand]
     private void VoltarParaLocacoes() => _navegacao.NavegarPara<LocacoesViewModel>();
 
+    [RelayCommand]
+    private void RegistrarDevolucao() =>
+        _navegacao.NavegarPara<DevolucaoViewModel>(devolucao => devolucao.Carregar(Locacao!.Id));
+
+    [RelayCommand]
+    private async Task CancelarLocacaoAsync()
+    {
+        var confirmado = _dialogos.Confirmar("Cancelar locação", MensagemDeCancelamento, "Cancelar locação");
+        if (!confirmado) return;
+
+        await ExecutarAsync(async () => Aplicar(await _api.CancelarLocacaoAsync(Locacao!.Id)));
+    }
+
     private void Aplicar(LocacaoResponse locacao)
     {
         Locacao = locacao;
         Entrada.LocacaoId = locacao.Id;
+        Prorrogacao.Locacao = locacao;
         Fatos = MontarFatos(locacao);
         Extrato = locacao.Pagamentos.OrderBy(pagamento => pagamento.DataPagamento).Select(LinhaDoExtrato.De).ToList();
         Totais = MontarTotais(locacao);

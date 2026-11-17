@@ -20,11 +20,6 @@
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-
-        <Style x:Key="AcaoPerigosa" TargetType="Button" BasedOn="{StaticResource Link}">
-            <Setter Property="Foreground" Value="{StaticResource SinalVermelhoBrush}"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
     </UserControl.Resources>
 
     <Grid Margin="32">
@@ -223,7 +218,7 @@
                                 Command="{Binding RetornarDaManutencaoCommand}"
                                 Margin="0,0,16,0"
                                 VerticalAlignment="Center"/>
-                        <Button Style="{StaticResource AcaoPerigosa}"
+                        <Button Style="{StaticResource LinkPerigoso}"
                                 Content="Inativar veículo"
                                 Command="{Binding InativarCommand}"
                                 Margin="0,0,16,0"

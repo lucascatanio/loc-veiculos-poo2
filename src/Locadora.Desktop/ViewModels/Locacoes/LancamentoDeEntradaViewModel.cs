@@ -1,4 +1,3 @@
-using System.Globalization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Locadora.Api.Dtos.Locacoes;
@@ -8,9 +7,6 @@ namespace Locadora.Desktop.ViewModels.Locacoes;
 
 public partial class LancamentoDeEntradaViewModel(IApiClient api, Action<LocacaoResponse> aoRegistrar) : ViewModelBase
 {
-    private const NumberStyles EstiloDoValor = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
-    private static readonly CultureInfo PtBr = CultureInfo.GetCultureInfo("pt-BR");
-
     public int LocacaoId { get; set; }
     public IReadOnlyList<FormaDePagamento> Formas => FormasDePagamento.Todas;
 
@@ -37,7 +33,7 @@ public partial class LancamentoDeEntradaViewModel(IApiClient api, Action<Locacao
     [RelayCommand]
     public async Task RegistrarEntradaAsync()
     {
-        if (!decimal.TryParse(ValorDigitado, EstiloDoValor, PtBr, out var valor))
+        if (!ValorMonetario.TentarLer(ValorDigitado, out var valor))
         {
             MensagemErro = "Informe o valor da entrada, por exemplo 100,50.";
             return;
