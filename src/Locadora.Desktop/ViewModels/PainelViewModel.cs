@@ -41,7 +41,7 @@ public partial class PainelViewModel(IApiClient apiClient, INavegacao navegacao)
     });
 
     [RelayCommand]
-    private void RegistrarRetirada() => navegacao.NavegarPara<LocacoesViewModel>();
+    private void RegistrarRetirada() => navegacao.NavegarPara<NovaLocacaoViewModel>();
 
     [RelayCommand]
     private void AbrirLocacao(int locacaoId) =>

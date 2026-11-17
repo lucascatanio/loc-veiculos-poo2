@@ -1,0 +1,190 @@
+<UserControl x:Class="Locadora.Desktop.Views.Locacoes.NovaLocacaoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Locadora.Desktop.Controles"
+             xmlns:conv="clr-namespace:Locadora.Desktop.Conversores"
+             xmlns:vm="clr-namespace:Locadora.Desktop.ViewModels.Locacoes"
+             xmlns:api="clr-namespace:Locadora.Api.Dtos.Clientes"
+             Style="{StaticResource TelaBase}"
+             Loaded="AoCarregar">
+
+    <UserControl.Resources>
+        <conv:CpfConversor x:Key="Cpf"/>
+
+        <GridLength x:Key="LarguraPlaca">136</GridLength>
+        <GridLength x:Key="LarguraDiaria">96</GridLength>
+
+        <Style x:Key="TituloDaSecao" TargetType="TextBlock" BasedOn="{StaticResource TextoSubtitulo}">
+            <Setter Property="Margin" Value="0,24,0,12"/>
+        </Style>
+
+        <Style x:Key="AvisoDoResumo" TargetType="TextBlock" BasedOn="{StaticResource TextoCorpo}">
+            <Setter Property="Foreground" Value="{StaticResource AtencaoTextoBrush}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,12,0,0"/>
+        </Style>
+
+        <Style x:Key="ListaDaBusca" TargetType="ListView" BasedOn="{StaticResource {x:Type ListView}}">
+            <Style.Triggers>
+                <Trigger Property="HasItems" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="ClienteDaBusca" DataType="{x:Type api:ClienteResponse}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Style="{StaticResource TextoDestaque}" TextTrimming="CharacterEllipsis"
+                           Margin="0,0,16,0" Text="{Binding Nome}"/>
+                <TextBlock Grid.Column="1" Style="{StaticResource TextoSecundario}" Text="{Binding Cpf, Converter={StaticResource Cpf}}"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="VeiculoDisponivel" DataType="{x:Type vm:VeiculoParaRetirada}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="{StaticResource LarguraPlaca}"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="{StaticResource LarguraDiaria}"/>
+                </Grid.ColumnDefinitions>
+                <c:PlacaMercosul Grid.Column="0" Placa="{Binding Placa}"/>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,16,0">
+                    <TextBlock Style="{StaticResource TextoDestaque}" TextTrimming="CharacterEllipsis" Text="{Binding Modelo}"/>
+                    <TextBlock Style="{StaticResource TextoMiudo}" TextTrimming="CharacterEllipsis" Text="{Binding CategoriaNome}"/>
+                </StackPanel>
+                <c:Valor Grid.Column="2" Rotulo="Diária" Quantia="{Binding ValorDiaria}"/>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="EntradaDaRetiradaModelo" DataType="{x:Type vm:EntradaDaRetirada}">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <TextBox Width="140" Text="{Binding ValorDigitado, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox Width="188" Margin="12,0,0,0" ItemsSource="{Binding Formas}" ItemTemplate="{StaticResource NomeDaOpcao}"
+                          SelectedItem="{Binding FormaSelecionada}"/>
+                <Button Style="{StaticResource Link}" Margin="12,0,0,0" VerticalAlignment="Center" Content="Remover"
+                        Command="{Binding DataContext.RemoverEntradaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CommandParameter="{Binding}"/>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Margin="32">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Button Grid.Row="0" Style="{StaticResource Link}" HorizontalAlignment="Left" Content="Voltar para locações"
+                Command="{Binding VoltarParaLocacoesCommand}"/>
+        <TextBlock Grid.Row="1" Style="{StaticResource TextoTitulo}" Margin="0,8,0,0" Text="Nova locação"/>
+
+        <Grid Grid.Row="2" Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MaxWidth="600"/>
+                <ColumnDefinition Width="48"/>
+                <ColumnDefinition Width="360"/>
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,0,16,32">
+                    <TextBlock Style="{StaticResource TituloDaSecao}" Margin="0,16,0,12" Text="Cliente"/>
+                    <StackPanel Visibility="{Binding TemClienteEscolhido, Converter={StaticResource BoolParaVisibilidadeInvertida}}">
+                        <TextBox Text="{Binding BuscaDeCliente, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Style="{StaticResource TextoMiudo}" Margin="0,4,0,0" Text="Busque por nome ou CPF."/>
+                        <ListView Style="{StaticResource ListaDaBusca}" Margin="0,8,0,0" ItemsSource="{Binding ClientesEncontrados}"
+                                  SelectedItem="{Binding ClienteDaBuscaSelecionado}"
+                                  ItemTemplate="{StaticResource ClienteDaBusca}"/>
+                        <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,8,0,0" Text="Nenhum cliente ativo encontrado."
+                                   Visibility="{Binding NenhumClienteEncontrado, Converter={StaticResource BoolParaVisibilidade}}"/>
+                    </StackPanel>
+                    <Grid Visibility="{Binding TemClienteEscolhido, Converter={StaticResource BoolParaVisibilidade}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Style="{StaticResource TextoDestaque}" TextTrimming="CharacterEllipsis" Text="{Binding ClienteEscolhido.Nome}"/>
+                            <TextBlock Style="{StaticResource TextoSecundario}" Text="{Binding ClienteEscolhido.Cpf, Converter={StaticResource Cpf}}"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Style="{StaticResource Link}" VerticalAlignment="Center" Content="Trocar cliente"
+                                Command="{Binding TrocarClienteCommand}"/>
+                    </Grid>
+
+                    <TextBlock Style="{StaticResource TituloDaSecao}" Text="Veículo"/>
+                    <c:CampoFormulario Rotulo="Categoria">
+                        <ComboBox Width="240" HorizontalAlignment="Left" ItemsSource="{Binding Categorias}" ItemTemplate="{StaticResource NomeDaOpcao}"
+                                  SelectedItem="{Binding CategoriaSelecionada}"/>
+                    </c:CampoFormulario>
+                    <ListView Margin="0,12,0,0" MaxHeight="184" ItemsSource="{Binding VeiculosDisponiveis}"
+                              SelectedItem="{Binding VeiculoSelecionado}" ItemTemplate="{StaticResource VeiculoDisponivel}"/>
+                    <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,8,0,0" Text="Nenhum veículo disponível nesta categoria."
+                               Visibility="{Binding SemVeiculosDisponiveis, Converter={StaticResource BoolParaVisibilidade}}"/>
+
+                    <TextBlock Style="{StaticResource TituloDaSecao}" Text="Devolução prevista"/>
+                    <StackPanel Orientation="Horizontal">
+                        <c:CampoFormulario Rotulo="Data">
+                            <DatePicker Width="160" Language="pt-BR" SelectedDate="{Binding DataDevolucao}"/>
+                        </c:CampoFormulario>
+                        <c:CampoFormulario Rotulo="Hora" Margin="12,0,0,0" Erro="{Binding ErroDaHora}">
+                            <TextBox Width="88" MaxLength="5" Text="{Binding HoraDevolucao, UpdateSourceTrigger=PropertyChanged}"/>
+                        </c:CampoFormulario>
+                    </StackPanel>
+
+                    <TextBlock Style="{StaticResource TituloDaSecao}" Text="Entradas"/>
+                    <ItemsControl ItemsSource="{Binding Entradas}" ItemTemplate="{StaticResource EntradaDaRetiradaModelo}"/>
+                    <Button HorizontalAlignment="Left" Content="Adicionar entrada" Command="{Binding AdicionarEntradaCommand}"/>
+
+                    <TextBlock Style="{StaticResource TituloDaSecao}" Text="Observação da retirada"/>
+                    <TextBox Height="72" MaxLength="500" AcceptsReturn="True" TextWrapping="Wrap"
+                             VerticalContentAlignment="Top" Text="{Binding Observacao, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,16,0,32">
+                    <Grid>
+                        <c:PlacaMercosul Placa="{Binding VeiculoSelecionado.Placa}" Tamanho="Grande" HorizontalAlignment="Left"
+                                         Visibility="{Binding TemVeiculoEscolhido, Converter={StaticResource BoolParaVisibilidade}}"/>
+                        <Border Width="240" Height="78" HorizontalAlignment="Left" CornerRadius="4"
+                                BorderBrush="{StaticResource DivisoriaBrush}" BorderThickness="1"
+                                Visibility="{Binding TemVeiculoEscolhido, Converter={StaticResource BoolParaVisibilidadeInvertida}}">
+                            <TextBlock Style="{StaticResource TextoSecundario}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Text="Escolha um veículo"/>
+                        </Border>
+                    </Grid>
+                    <TextBlock Style="{StaticResource TextoSubtitulo}" Margin="0,8,0,0" Text="{Binding VeiculoSelecionado.Modelo}"
+                               Visibility="{Binding TemVeiculoEscolhido, Converter={StaticResource BoolParaVisibilidade}}"/>
+
+                    <ItemsControl Margin="0,24,0,0" ItemsSource="{Binding Resumo.Fatos}" ItemTemplate="{StaticResource FatoDoContratoModelo}"/>
+
+                    <StackPanel Visibility="{Binding Resumo.PossuiValores, Converter={StaticResource BoolParaVisibilidade}}">
+                        <ItemsControl ItemsSource="{Binding Resumo.Totais}" ItemTemplate="{StaticResource TotalDoContratoModelo}"/>
+                        <Border BorderBrush="{StaticResource AsfaltoBrush}" BorderThickness="0,1,0,0" Margin="0,16,0,0" Padding="0,12,0,0">
+                            <Grid>
+                                <TextBlock Style="{StaticResource TextoSubtitulo}" VerticalAlignment="Center" Text="Saldo a pagar"/>
+                                <c:Valor Quantia="{Binding Resumo.Saldo}" Destaque="True" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource TextoSecundario}" TextWrapping="Wrap"
+                               Text="Escolha o veículo e a devolução para ver os valores."
+                               Visibility="{Binding Resumo.PossuiValores, Converter={StaticResource BoolParaVisibilidadeInvertida}}"/>
+
+                    <TextBlock Style="{StaticResource AvisoDoResumo}" Text="{Binding Resumo.AvisoDeData}"
+                               Visibility="{Binding Resumo.AvisoDeData, Converter={StaticResource TextoPreenchido}}"/>
+                    <TextBlock Style="{StaticResource AvisoDoResumo}" Text="{Binding Resumo.AvisoDeEntradas}"
+                               Visibility="{Binding Resumo.AvisoDeEntradas, Converter={StaticResource TextoPreenchido}}"/>
+
+                    <c:MensagemErro Margin="0,24,0,0" Mensagem="{Binding MensagemErro}"/>
+                    <Button Style="{StaticResource Primario}" Margin="0,24,0,0" HorizontalAlignment="Left"
+                            Content="Registrar retirada" Command="{Binding RegistrarRetiradaCommand}"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

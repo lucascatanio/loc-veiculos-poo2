@@ -3,8 +3,7 @@
                     xmlns:vm="clr-namespace:Locadora.Desktop.ViewModels"
                     xmlns:views="clr-namespace:Locadora.Desktop.Views"
                     xmlns:vmLocacoes="clr-namespace:Locadora.Desktop.ViewModels.Locacoes"
-                    xmlns:viewsLocacoes="clr-namespace:Locadora.Desktop.Views.Locacoes"
-                    xmlns:c="clr-namespace:Locadora.Desktop.Controles">
+                    xmlns:viewsLocacoes="clr-namespace:Locadora.Desktop.Views.Locacoes">
 
     <!-- Cada tela registra aqui o par ViewModel -> View -->
     <DataTemplate DataType="{x:Type vm:LoginViewModel}"><views:LoginView/></DataTemplate>
@@ -12,30 +11,11 @@
     <DataTemplate DataType="{x:Type vm:PainelViewModel}"><views:PainelView/></DataTemplate>
     <DataTemplate DataType="{x:Type vmLocacoes:LocacoesViewModel}"><viewsLocacoes:LocacoesView/></DataTemplate>
     <DataTemplate DataType="{x:Type vmLocacoes:LocacaoDetalheViewModel}"><viewsLocacoes:LocacaoDetalheView/></DataTemplate>
+    <DataTemplate DataType="{x:Type vmLocacoes:NovaLocacaoViewModel}"><viewsLocacoes:NovaLocacaoView/></DataTemplate>
     <DataTemplate DataType="{x:Type vmLocacoes:DevolucaoViewModel}"><viewsLocacoes:DevolucaoView/></DataTemplate>
     <DataTemplate DataType="{x:Type vm:ClientesViewModel}"><views:ClientesView/></DataTemplate>
     <DataTemplate DataType="{x:Type vm:VeiculosViewModel}"><views:VeiculosView/></DataTemplate>
     <DataTemplate DataType="{x:Type vm:CategoriasViewModel}"><views:CategoriasView/></DataTemplate>
     <DataTemplate DataType="{x:Type vm:FuncionariosViewModel}"><views:FuncionariosView/></DataTemplate>
 
-    <DataTemplate DataType="{x:Type vmLocacoes:FormaDePagamento}"><TextBlock Text="{Binding Nome}"/></DataTemplate>
-
-    <!-- Modelos compartilhados pelo contrato e pela devolução -->
-    <DataTemplate x:Key="FatoDoContratoModelo">
-        <StackPanel Margin="0,0,0,16">
-            <TextBlock Style="{StaticResource TextoMiudo}" Text="{Binding Rotulo}"/>
-            <TextBlock Style="{StaticResource TextoDestaque}" TextWrapping="Wrap" Text="{Binding Texto}"/>
-        </StackPanel>
-    </DataTemplate>
-
-    <DataTemplate x:Key="TotalDoContratoModelo">
-        <Grid Margin="0,8,0,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Style="{StaticResource TextoSecundario}" VerticalAlignment="Center" Text="{Binding Rotulo}"/>
-            <c:Valor Grid.Column="1" Quantia="{Binding Valor}"/>
-        </Grid>
-    </DataTemplate>
 </ResourceDictionary>
