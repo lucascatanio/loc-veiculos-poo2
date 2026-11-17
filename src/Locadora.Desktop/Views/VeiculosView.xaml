@@ -1,9 +1,242 @@
 <UserControl x:Class="Locadora.Desktop.Views.VeiculosView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Locadora.Desktop.Controles"
+             xmlns:conv="clr-namespace:Locadora.Desktop.Conversores"
              Style="{StaticResource TelaBase}">
-    <StackPanel Margin="32">
-        <TextBlock Style="{StaticResource TextoTitulo}" Text="{Binding Titulo}"/>
-        <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,4,0,0" Text="Esta tela chega no card Fxx."/>
-    </StackPanel>
+    <UserControl.Resources>
+        <conv:QuilometragemConversor x:Key="Quilometragem"/>
+
+        <Style x:Key="TextoDaLinha" TargetType="TextBlock" BasedOn="{StaticResource TextoDestaque}">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Ativo}" Value="False">
+                    <Setter Property="Foreground" Value="{StaticResource TextoSecundarioBrush}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DetalheDaLinha" TargetType="TextBlock" BasedOn="{StaticResource TextoSecundario}">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="AcaoPerigosa" TargetType="Button" BasedOn="{StaticResource Link}">
+            <Setter Property="Foreground" Value="{StaticResource SinalVermelhoBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="32">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="448"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.ColumnSpan="2"
+                   Style="{StaticResource TextoTitulo}"
+                   Text="{Binding Titulo}"/>
+
+        <Grid Grid.Row="1" Margin="0,24,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Margin="0,0,0,16">
+                <c:BarraBusca TextoBusca="{Binding TextoBusca, Mode=TwoWay}"
+                              MostrarInativos="{Binding MostrarInativos, Mode=TwoWay}"
+                              ComandoBuscar="{Binding CarregarCommand}"
+                              Dica="Buscar por placa, marca ou modelo"/>
+                <ComboBox Width="160"
+                          Margin="0,12,0,0"
+                          HorizontalAlignment="Left"
+                          ItemsSource="{Binding FiltrosDeStatus}"
+                          SelectedItem="{Binding FiltroSelecionado, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Texto}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <ListView Grid.Row="1"
+                      ItemsSource="{Binding ItensFiltrados}"
+                      SelectedItem="{Binding ItemSelecionado, Mode=TwoWay}"
+                      Visibility="{Binding ListaSemResultados, Converter={StaticResource BoolParaVisibilidadeInvertida}}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="136"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="52"/>
+                                <ColumnDefinition Width="96"/>
+                                <ColumnDefinition Width="104"/>
+                            </Grid.ColumnDefinitions>
+
+                            <c:PlacaMercosul Placa="{Binding Placa}"
+                                             HorizontalAlignment="Left"
+                                             VerticalAlignment="Center"/>
+
+                            <StackPanel Grid.Column="1" Margin="0,0,12,0" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource TextoDaLinha}">
+                                    <Run Text="{Binding Marca, Mode=OneWay}"/>
+                                    <Run Text="{Binding Modelo, Mode=OneWay}"/>
+                                </TextBlock>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource DetalheDaLinha}"
+                                               Text="{Binding CategoriaNome}"/>
+                                    <c:StatusSelo Status="Inativo"
+                                                  Margin="12,0,0,0"
+                                                  Visibility="{Binding Ativo, Converter={StaticResource BoolParaVisibilidadeInvertida}}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <TextBlock Grid.Column="2"
+                                       Style="{StaticResource DetalheDaLinha}"
+                                       Text="{Binding Ano}"/>
+                            <TextBlock Grid.Column="3"
+                                       Style="{StaticResource DetalheDaLinha}"
+                                       Text="{Binding KmAtual, Converter={StaticResource Quilometragem}}"/>
+                            <c:StatusSelo Grid.Column="4" Status="{Binding Status}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <c:EstadoVazio Grid.Row="1"
+                           VerticalAlignment="Top"
+                           Texto="Nenhum veículo encontrado."
+                           TextoAcao="Novo veículo"
+                           Comando="{Binding NovoCommand}"
+                           Visibility="{Binding ListaSemResultados, Converter={StaticResource BoolParaVisibilidade}}"/>
+        </Grid>
+
+        <Border Grid.Row="1" Grid.Column="1"
+                Margin="32,24,0,0"
+                Padding="32,0,0,0"
+                BorderBrush="{StaticResource DivisoriaBrush}"
+                BorderThickness="1,0,0,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel HorizontalAlignment="Left" Width="384">
+                    <TextBlock Style="{StaticResource TextoSubtitulo}"
+                               Text="Novo veículo"
+                               Visibility="{Binding Editando, Converter={StaticResource BoolParaVisibilidadeInvertida}}"/>
+                    <TextBlock Style="{StaticResource TextoSubtitulo}"
+                               Text="Editar veículo"
+                               Visibility="{Binding Editando, Converter={StaticResource BoolParaVisibilidade}}"/>
+
+                    <Grid Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <c:CampoFormulario Rotulo="Placa">
+                            <TextBox Text="{Binding Placa, UpdateSourceTrigger=PropertyChanged}"
+                                     MaxLength="8"
+                                     CharacterCasing="Upper"
+                                     IsReadOnly="{Binding Editando, Mode=OneWay}"/>
+                        </c:CampoFormulario>
+                        <c:PlacaMercosul Grid.Column="1"
+                                         Tamanho="Grande"
+                                         Placa="{Binding Placa}"
+                                         Margin="16,20,0,0"
+                                         VerticalAlignment="Top"/>
+                    </Grid>
+
+                    <c:CampoFormulario Rotulo="Marca" Margin="0,16,0,0">
+                        <TextBox Text="{Binding Marca, UpdateSourceTrigger=PropertyChanged}" MaxLength="60"/>
+                    </c:CampoFormulario>
+
+                    <c:CampoFormulario Rotulo="Modelo" Margin="0,16,0,0">
+                        <TextBox Text="{Binding Modelo, UpdateSourceTrigger=PropertyChanged}" MaxLength="60"/>
+                    </c:CampoFormulario>
+
+                    <Grid Margin="0,16,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <c:CampoFormulario Rotulo="Ano" Erro="{Binding ErroAno}">
+                            <TextBox Text="{Binding AnoTexto, UpdateSourceTrigger=PropertyChanged}" MaxLength="4"/>
+                        </c:CampoFormulario>
+                        <c:CampoFormulario Grid.Column="1" Rotulo="Cor" Margin="16,0,0,0">
+                            <TextBox Text="{Binding Cor, UpdateSourceTrigger=PropertyChanged}" MaxLength="30"/>
+                        </c:CampoFormulario>
+                    </Grid>
+
+                    <c:CampoFormulario Rotulo="Km inicial"
+                                       Erro="{Binding ErroKm}"
+                                       Margin="0,16,0,0"
+                                       Visibility="{Binding Editando, Converter={StaticResource BoolParaVisibilidadeInvertida}}">
+                        <TextBox Text="{Binding KmInicialTexto, UpdateSourceTrigger=PropertyChanged}"/>
+                    </c:CampoFormulario>
+                    <c:CampoFormulario Rotulo="Km atual"
+                                       Margin="0,16,0,0"
+                                       Visibility="{Binding Editando, Converter={StaticResource BoolParaVisibilidade}}">
+                        <TextBlock Style="{StaticResource TextoDestaque}"
+                                   Text="{Binding KmAtual, Converter={StaticResource Quilometragem}}"/>
+                    </c:CampoFormulario>
+
+                    <c:CampoFormulario Rotulo="Categoria"
+                                       Erro="{Binding ErroCategoria}"
+                                       Margin="0,16,0,0">
+                        <ComboBox ItemsSource="{Binding CategoriasAtivas}"
+                                  SelectedValuePath="Id"
+                                  SelectedValue="{Binding CategoriaId, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Nome}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </c:CampoFormulario>
+
+                    <c:MensagemErro Mensagem="{Binding MensagemErro}" Margin="0,16,0,0"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,24,0,0">
+                        <Button Style="{StaticResource Primario}"
+                                Content="Salvar veículo"
+                                Command="{Binding SalvarCommand}"/>
+                        <Button Content="Novo veículo"
+                                Command="{Binding NovoCommand}"
+                                Margin="12,0,0,0"/>
+                    </StackPanel>
+
+                    <WrapPanel Margin="0,16,0,0"
+                               Visibility="{Binding Editando, Converter={StaticResource BoolParaVisibilidade}}">
+                        <Button Style="{StaticResource Link}"
+                                Content="Enviar para manutenção"
+                                Command="{Binding EnviarParaManutencaoCommand}"
+                                Margin="0,0,16,0"
+                                VerticalAlignment="Center"/>
+                        <Button Style="{StaticResource Link}"
+                                Content="Retornar da manutenção"
+                                Command="{Binding RetornarDaManutencaoCommand}"
+                                Margin="0,0,16,0"
+                                VerticalAlignment="Center"/>
+                        <Button Style="{StaticResource AcaoPerigosa}"
+                                Content="Inativar veículo"
+                                Command="{Binding InativarCommand}"
+                                Margin="0,0,16,0"
+                                Visibility="{Binding PodeInativar, Converter={StaticResource BoolParaVisibilidade}}"/>
+                        <Button Style="{StaticResource Link}"
+                                Content="Reativar veículo"
+                                Command="{Binding ReativarCommand}"
+                                Margin="0,0,16,0"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding PodeReativar, Converter={StaticResource BoolParaVisibilidade}}"/>
+                    </WrapPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
 </UserControl>
