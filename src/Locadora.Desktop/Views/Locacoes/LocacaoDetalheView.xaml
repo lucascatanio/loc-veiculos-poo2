@@ -5,18 +5,20 @@
              Style="{StaticResource TelaBase}">
 
     <UserControl.Resources>
+        <Style x:Key="PainelDeAcao" TargetType="Border">
+            <Setter Property="Margin" Value="0,16,0,0"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="{StaticResource PapelBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DivisoriaBrush}"/>
+            <Setter Property="BorderThickness" Value="3,0,0,0"/>
+        </Style>
+
         <Style x:Key="LinhaDoExtratoBorda" TargetType="Border">
             <Setter Property="BorderBrush" Value="{StaticResource DivisoriaBrush}"/>
             <Setter Property="BorderThickness" Value="0,0,0,1"/>
             <Setter Property="Padding" Value="0,10"/>
         </Style>
-
-        <DataTemplate x:Key="FatoDoContratoModelo">
-            <StackPanel Margin="0,0,0,16">
-                <TextBlock Style="{StaticResource TextoMiudo}" Text="{Binding Rotulo}"/>
-                <TextBlock Style="{StaticResource TextoDestaque}" TextWrapping="Wrap" Text="{Binding Texto}"/>
-            </StackPanel>
-        </DataTemplate>
 
         <DataTemplate x:Key="LinhaDoExtratoModelo">
             <Border Style="{StaticResource LinhaDoExtratoBorda}">
@@ -34,17 +36,6 @@
                 </Grid>
             </Border>
         </DataTemplate>
-
-        <DataTemplate x:Key="TotalDoContratoModelo">
-            <Grid Margin="0,8,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Style="{StaticResource TextoSecundario}" VerticalAlignment="Center" Text="{Binding Rotulo}"/>
-                <c:Valor Grid.Column="1" Quantia="{Binding Valor}"/>
-            </Grid>
-        </DataTemplate>
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -58,13 +49,16 @@
             <StackPanel Margin="0,16,0,0" Visibility="{Binding EstaAberta, Converter={StaticResource BoolParaVisibilidade}}">
                 <StackPanel Orientation="Horizontal">
                     <Button Style="{StaticResource Primario}" Content="Lançar entrada" Command="{Binding Entrada.AbrirCommand}"/>
-                    <Button Margin="8,0,0,0" Content="Prorrogar" Command="{Binding ProrrogarCommand}"/>
+                    <Button Margin="8,0,0,0" Content="Prorrogar" Command="{Binding Prorrogacao.AbrirCommand}"/>
                     <Button Margin="8,0,0,0" Content="Registrar devolução" Command="{Binding RegistrarDevolucaoCommand}"/>
-                    <Button Margin="8,0,0,0" Content="Cancelar locação" Command="{Binding CancelarCommand}"/>
+                    <Button Style="{StaticResource LinkPerigoso}" Margin="16,0,0,0" Content="Cancelar locação"
+                            Command="{Binding CancelarLocacaoCommand}"/>
                 </StackPanel>
+                <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,8,0,0"
+                           Text="{Binding Prorrogacao.MotivoIndisponivel}"
+                           Visibility="{Binding Prorrogacao.MotivoIndisponivel, Converter={StaticResource TextoPreenchido}}"/>
 
-                <Border Margin="0,16,0,0" Padding="16" Background="{StaticResource PapelBrush}" HorizontalAlignment="Left"
-                        BorderBrush="{StaticResource DivisoriaBrush}" BorderThickness="3,0,0,0"
+                <Border Style="{StaticResource PainelDeAcao}"
                         Visibility="{Binding Entrada.Aberto, Converter={StaticResource BoolParaVisibilidade}}">
                     <StackPanel Width="360" DataContext="{Binding Entrada}">
                         <StackPanel Orientation="Horizontal">
@@ -72,7 +66,7 @@
                                 <TextBox Width="140" Text="{Binding ValorDigitado, UpdateSourceTrigger=PropertyChanged}"/>
                             </c:CampoFormulario>
                             <c:CampoFormulario Rotulo="Forma de pagamento" Margin="12,0,0,0">
-                                <ComboBox Width="188" ItemsSource="{Binding Formas}" DisplayMemberPath="Nome"
+                                <ComboBox Width="188" ItemsSource="{Binding Formas}"
                                           SelectedItem="{Binding FormaSelecionada}"/>
                             </c:CampoFormulario>
                         </StackPanel>
@@ -80,6 +74,35 @@
                         <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
                             <Button Style="{StaticResource Primario}" Content="Registrar entrada"
                                     Command="{Binding RegistrarEntradaCommand}"/>
+                            <Button Margin="8,0,0,0" Content="Fechar" Command="{Binding FecharCommand}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource PainelDeAcao}"
+                        Visibility="{Binding Prorrogacao.Aberto, Converter={StaticResource BoolParaVisibilidade}}">
+                    <StackPanel Width="360" DataContext="{Binding Prorrogacao}">
+                        <StackPanel Orientation="Horizontal">
+                            <c:CampoFormulario Rotulo="Nova data" Erro="{Binding AvisoDaData}">
+                                <TextBox Width="128" Text="{Binding DataDigitada, UpdateSourceTrigger=PropertyChanged}"/>
+                            </c:CampoFormulario>
+                            <c:CampoFormulario Rotulo="Hora" Margin="12,0,0,0">
+                                <TextBox Width="80" Text="{Binding HoraDigitada, UpdateSourceTrigger=PropertyChanged}"/>
+                            </c:CampoFormulario>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,16,0,0"
+                                    Visibility="{Binding HaPrevia, Converter={StaticResource BoolParaVisibilidade}}">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource TextoMiudo}" Text="Novas diárias"/>
+                                <TextBlock Style="{StaticResource Valor}" Text="{Binding Previa.NovasDiarias}"/>
+                            </StackPanel>
+                            <c:Valor Margin="24,0,0,0" Rotulo="Novo previsto" Quantia="{Binding Previa.NovoPrevisto}"/>
+                            <c:Valor Margin="24,0,0,0" Rotulo="Novo saldo" Quantia="{Binding Previa.NovoSaldo}"/>
+                        </StackPanel>
+                        <c:MensagemErro Margin="0,12,0,0" Mensagem="{Binding MensagemErro}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                            <Button Style="{StaticResource Primario}" Content="Confirmar prorrogação"
+                                    Command="{Binding ProrrogarCommand}"/>
                             <Button Margin="8,0,0,0" Content="Fechar" Command="{Binding FecharCommand}"/>
                         </StackPanel>
                     </StackPanel>

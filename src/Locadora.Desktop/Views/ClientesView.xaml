@@ -16,11 +16,6 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-
-        <Style x:Key="AcaoPerigosa" TargetType="Button" BasedOn="{StaticResource Link}">
-            <Setter Property="Foreground" Value="{StaticResource SinalVermelhoBrush}"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
     </UserControl.Resources>
 
     <Grid Margin="32">
@@ -143,7 +138,7 @@
                     <Button Content="Novo cliente"
                             Command="{Binding NovoCommand}"
                             Margin="12,0,0,0"/>
-                    <Button Style="{StaticResource AcaoPerigosa}"
+                    <Button Style="{StaticResource LinkPerigoso}"
                             Content="Inativar cliente"
                             Command="{Binding InativarCommand}"
                             Margin="16,0,0,0"

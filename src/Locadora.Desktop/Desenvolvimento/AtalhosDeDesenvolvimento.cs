@@ -4,7 +4,7 @@ using Locadora.Desktop.ViewModels.Locacoes;
 
 namespace Locadora.Desktop.Desenvolvimento;
 
-// --login <email> <senha> entra sozinho; --tela <Painel|Locacoes|Clientes|Veiculos|Categorias|Funcionarios> abre direto nela; --locacao <id> abre o contrato dessa locação; --galeria abre a galeria de componentes.
+// --login <email> <senha> entra sozinho; --tela <Painel|Locacoes|Clientes|Veiculos|Categorias|Funcionarios> abre direto nela; --locacao <id> abre o contrato dessa locação; --devolucao <id> abre a devolução dela; --galeria abre a galeria de componentes.
 public static class AtalhosDeDesenvolvimento
 {
     public static async Task AplicarAsync(MainViewModel principal, string[] args)
@@ -26,6 +26,10 @@ public static class AtalhosDeDesenvolvimento
         var iLocacao = Array.IndexOf(args, "--locacao");
         if (iLocacao >= 0 && iLocacao + 1 < args.Length && int.TryParse(args[iLocacao + 1], out var locacaoId) && principal.Conteudo is ShellViewModel aberto)
             aberto.Navegacao.NavegarPara<LocacaoDetalheViewModel>(detalhe => detalhe.Carregar(locacaoId));
+
+        var iDevolucao = Array.IndexOf(args, "--devolucao");
+        if (iDevolucao >= 0 && iDevolucao + 1 < args.Length && int.TryParse(args[iDevolucao + 1], out var devolucaoId) && principal.Conteudo is ShellViewModel shellDaDevolucao)
+            shellDaDevolucao.Navegacao.NavegarPara<DevolucaoViewModel>(devolucao => devolucao.Carregar(devolucaoId));
     }
 }
 #endif

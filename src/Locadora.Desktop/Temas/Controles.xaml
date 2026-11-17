@@ -147,6 +147,12 @@
         </Setter>
     </Style>
 
+    <!-- Ação destrutiva fica discreta: não compete com o botão primário. -->
+    <Style x:Key="LinkPerigoso" TargetType="Button" BasedOn="{StaticResource Link}">
+        <Setter Property="Foreground" Value="{StaticResource SinalVermelhoBrush}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
     <!-- Campos -->
     <Style x:Key="CampoBase" TargetType="Control">
         <Setter Property="FontFamily" Value="{StaticResource Barlow}"/>

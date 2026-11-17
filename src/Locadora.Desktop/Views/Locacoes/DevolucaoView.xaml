@@ -1,0 +1,127 @@
+<UserControl x:Class="Locadora.Desktop.Views.Locacoes.DevolucaoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Locadora.Desktop.Controles"
+             xmlns:vm="clr-namespace:Locadora.Desktop.ViewModels.Locacoes"
+             Style="{StaticResource TelaBase}">
+
+    <UserControl.Resources>
+        <Style x:Key="FaixaDeAtraso" TargetType="Border">
+            <Setter Property="Margin" Value="0,16,0,0"/>
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="Background" Value="{StaticResource PapelBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource SinalVermelhoBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+
+        <Style x:Key="IndicadorDeFechamento" TargetType="TextBlock" BasedOn="{StaticResource NumeroGrande}">
+            <Setter Property="Foreground" Value="{StaticResource AtencaoTextoBrush}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SituacaoDoFechamento}" Value="{x:Static vm:SituacaoDoFechamento.Sobra}">
+                    <Setter Property="Foreground" Value="{StaticResource SinalVermelhoBrush}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding SituacaoDoFechamento}" Value="{x:Static vm:SituacaoDoFechamento.Fechado}">
+                    <Setter Property="Foreground" Value="{StaticResource LiberadoBrush}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <DataTemplate x:Key="SaidaModelo">
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <TextBox Width="140" VerticalAlignment="Center"
+                         Text="{Binding ValorDigitado, UpdateSourceTrigger=PropertyChanged}"/>
+                <ComboBox Width="188" Margin="12,0,0,0" VerticalAlignment="Center"
+                          ItemsSource="{Binding Formas}"
+                          SelectedItem="{Binding FormaSelecionada}"/>
+                <Button Style="{StaticResource Link}" Margin="12,0,0,0" VerticalAlignment="Center" Content="Remover"
+                        Command="{Binding DataContext.RemoverSaidaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CommandParameter="{Binding}"/>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="32">
+            <Button Style="{StaticResource Link}" HorizontalAlignment="Left" Content="Voltar para o contrato"
+                    Command="{Binding VoltarParaContratoCommand}"/>
+            <TextBlock Style="{StaticResource TextoTitulo}" Margin="0,8,0,0" Text="Registrar devolução"/>
+            <StackPanel Visibility="{Binding Carregada, Converter={StaticResource BoolParaVisibilidadeInvertida}}">
+                <c:MensagemErro Margin="0,12,0,0" Mensagem="{Binding MensagemErro}"/>
+            </StackPanel>
+
+            <StackPanel Visibility="{Binding Carregada, Converter={StaticResource BoolParaVisibilidade}}">
+                <Border Style="{StaticResource FaixaDeAtraso}" HorizontalAlignment="Left"
+                        Visibility="{Binding HaAtraso, Converter={StaticResource BoolParaVisibilidade}}">
+                    <TextBlock Style="{StaticResource TextoDestaque}" Foreground="{StaticResource VermelhoEscuroBrush}"
+                               Text="{Binding FraseDoAtraso}"/>
+                </Border>
+
+                <Grid Margin="0,24,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="320"/>
+                        <ColumnDefinition Width="48"/>
+                        <ColumnDefinition Width="*" MaxWidth="560"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <c:PlacaMercosul Placa="{Binding Locacao.VeiculoPlaca}" Tamanho="Grande"/>
+                        <TextBlock Style="{StaticResource TextoSubtitulo}" Margin="0,8,0,0" Text="{Binding Locacao.VeiculoModelo}"/>
+                        <TextBlock Style="{StaticResource TextoDestaque}" Margin="0,16,0,0" TextTrimming="CharacterEllipsis"
+                                   Text="{Binding Locacao.ClienteNome}"/>
+                        <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,4,0,0"
+                                   Text="{Binding DevolucaoPrevista, StringFormat=Devolução prevista: {0}}"/>
+
+                        <Grid Margin="0,24,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource TextoMiudo}" Text="Diárias contratadas"/>
+                                <TextBlock Style="{StaticResource Valor}" Text="{Binding Previa.DiariasContratadas}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Style="{StaticResource TextoMiudo}" Text="Dias de atraso"/>
+                                <TextBlock Style="{StaticResource Valor}" Text="{Binding Previa.DiasAtraso}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <ItemsControl Margin="0,16,0,0" ItemsSource="{Binding Resumo}"
+                                      ItemTemplate="{StaticResource TotalDoContratoModelo}"/>
+                        <Border BorderBrush="{StaticResource AsfaltoBrush}" BorderThickness="0,1,0,0" Margin="0,16,0,0" Padding="0,12,0,0">
+                            <Grid>
+                                <TextBlock Style="{StaticResource TextoSubtitulo}" VerticalAlignment="Center" Text="Saldo a pagar"/>
+                                <c:Valor Quantia="{Binding Previa.Saldo}" Destaque="True" HorizontalAlignment="Right"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <c:CampoFormulario Rotulo="Km na devolução" Erro="{Binding AvisoDoKm}">
+                            <TextBox Width="160" HorizontalAlignment="Left" MaxLength="9"
+                                     Text="{Binding KmDigitado, UpdateSourceTrigger=PropertyChanged}"/>
+                        </c:CampoFormulario>
+                        <c:CampoFormulario Margin="0,16,0,0" Rotulo="Observação (opcional)">
+                            <TextBox Height="72" MaxLength="500" TextWrapping="Wrap" AcceptsReturn="True"
+                                     VerticalContentAlignment="Top"
+                                     Text="{Binding Observacao, UpdateSourceTrigger=PropertyChanged}"/>
+                        </c:CampoFormulario>
+
+                        <TextBlock Style="{StaticResource TextoSubtitulo}" Margin="0,24,0,12" Text="Pagamentos na devolução"/>
+                        <ItemsControl ItemsSource="{Binding Saidas}" ItemTemplate="{StaticResource SaidaModelo}"/>
+                        <Button HorizontalAlignment="Left" Content="Adicionar pagamento" Command="{Binding AdicionarSaidaCommand}"/>
+
+                        <Border BorderBrush="{StaticResource AsfaltoBrush}" BorderThickness="0,1,0,0" Margin="0,24,0,0" Padding="0,12,0,0">
+                            <TextBlock Style="{StaticResource IndicadorDeFechamento}" Text="{Binding TextoDoFechamento}"/>
+                        </Border>
+
+                        <c:MensagemErro Margin="0,16,0,0" Mensagem="{Binding MensagemErro}"/>
+                        <Button Style="{StaticResource Primario}" HorizontalAlignment="Left" Margin="0,16,0,0"
+                                Content="Confirmar devolução" Command="{Binding ConfirmarDevolucaoCommand}"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
