@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Locadora.Desktop.Servicos;
+using Locadora.Desktop.ViewModels.Locacoes;
 
 namespace Locadora.Desktop.ViewModels;
 

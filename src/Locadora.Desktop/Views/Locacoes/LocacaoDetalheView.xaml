@@ -1,0 +1,134 @@
+<UserControl x:Class="Locadora.Desktop.Views.Locacoes.LocacaoDetalheView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Locadora.Desktop.Controles"
+             Style="{StaticResource TelaBase}">
+
+    <UserControl.Resources>
+        <Style x:Key="LinhaDoExtratoBorda" TargetType="Border">
+            <Setter Property="BorderBrush" Value="{StaticResource DivisoriaBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="0,10"/>
+        </Style>
+
+        <DataTemplate x:Key="FatoDoContratoModelo">
+            <StackPanel Margin="0,0,0,16">
+                <TextBlock Style="{StaticResource TextoMiudo}" Text="{Binding Rotulo}"/>
+                <TextBlock Style="{StaticResource TextoDestaque}" TextWrapping="Wrap" Text="{Binding Texto}"/>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="LinhaDoExtratoModelo">
+            <Border Style="{StaticResource LinhaDoExtratoBorda}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="128"/>
+                        <ColumnDefinition Width="72"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="{Binding Data, StringFormat={}{0:dd/MM/yyyy HH:mm}}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Tipo}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Forma}" TextTrimming="CharacterEllipsis"/>
+                    <c:Valor Grid.Column="3" Quantia="{Binding Valor}"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <DataTemplate x:Key="TotalDoContratoModelo">
+            <Grid Margin="0,8,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Style="{StaticResource TextoSecundario}" VerticalAlignment="Center" Text="{Binding Rotulo}"/>
+                <c:Valor Grid.Column="1" Quantia="{Binding Valor}"/>
+            </Grid>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="32">
+            <Button Style="{StaticResource Link}" HorizontalAlignment="Left" Content="Voltar para locações"
+                    Command="{Binding VoltarParaLocacoesCommand}"/>
+            <c:MensagemErro Margin="0,12,0,0" Mensagem="{Binding MensagemErro}"/>
+            <StackPanel Visibility="{Binding Carregada, Converter={StaticResource BoolParaVisibilidade}}">
+            <TextBlock Style="{StaticResource TextoTitulo}" Margin="0,8,0,0" Text="{Binding Locacao.Id, StringFormat=Locação {0}}"/>
+
+            <StackPanel Margin="0,16,0,0" Visibility="{Binding EstaAberta, Converter={StaticResource BoolParaVisibilidade}}">
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource Primario}" Content="Lançar entrada" Command="{Binding Entrada.AbrirCommand}"/>
+                    <Button Margin="8,0,0,0" Content="Prorrogar" Command="{Binding ProrrogarCommand}"/>
+                    <Button Margin="8,0,0,0" Content="Registrar devolução" Command="{Binding RegistrarDevolucaoCommand}"/>
+                    <Button Margin="8,0,0,0" Content="Cancelar locação" Command="{Binding CancelarCommand}"/>
+                </StackPanel>
+
+                <Border Margin="0,16,0,0" Padding="16" Background="{StaticResource PapelBrush}" HorizontalAlignment="Left"
+                        BorderBrush="{StaticResource DivisoriaBrush}" BorderThickness="3,0,0,0"
+                        Visibility="{Binding Entrada.Aberto, Converter={StaticResource BoolParaVisibilidade}}">
+                    <StackPanel Width="360" DataContext="{Binding Entrada}">
+                        <StackPanel Orientation="Horizontal">
+                            <c:CampoFormulario Rotulo="Valor">
+                                <TextBox Width="140" Text="{Binding ValorDigitado, UpdateSourceTrigger=PropertyChanged}"/>
+                            </c:CampoFormulario>
+                            <c:CampoFormulario Rotulo="Forma de pagamento" Margin="12,0,0,0">
+                                <ComboBox Width="188" ItemsSource="{Binding Formas}" DisplayMemberPath="Nome"
+                                          SelectedItem="{Binding FormaSelecionada}"/>
+                            </c:CampoFormulario>
+                        </StackPanel>
+                        <c:MensagemErro Margin="0,12,0,0" Mensagem="{Binding MensagemErro}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                            <Button Style="{StaticResource Primario}" Content="Registrar entrada"
+                                    Command="{Binding RegistrarEntradaCommand}"/>
+                            <Button Margin="8,0,0,0" Content="Fechar" Command="{Binding FecharCommand}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <Grid Margin="0,24,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="320"/>
+                    <ColumnDefinition Width="48"/>
+                    <ColumnDefinition Width="*" MaxWidth="560"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <c:PlacaMercosul Placa="{Binding Locacao.VeiculoPlaca}" Tamanho="Grande"/>
+                    <TextBlock Style="{StaticResource TextoSubtitulo}" Margin="0,8,0,0" Text="{Binding Locacao.VeiculoModelo}"/>
+                    <c:StatusSelo Margin="0,8,0,24" Status="{Binding Locacao.Status}"/>
+                    <ItemsControl ItemsSource="{Binding Fatos}" ItemTemplate="{StaticResource FatoDoContratoModelo}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Style="{StaticResource TextoSubtitulo}" Text="Extrato"/>
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="128"/>
+                            <ColumnDefinition Width="72"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource TextoMiudo}" Text="Data"/>
+                        <TextBlock Grid.Column="1" Style="{StaticResource TextoMiudo}" Text="Tipo"/>
+                        <TextBlock Grid.Column="2" Style="{StaticResource TextoMiudo}" Text="Forma"/>
+                        <TextBlock Grid.Column="3" Style="{StaticResource TextoMiudo}" Text="Valor"/>
+                    </Grid>
+                    <Border BorderBrush="{StaticResource AsfaltoBrush}" BorderThickness="0,1,0,0" Margin="0,4,0,0"/>
+                    <ItemsControl ItemsSource="{Binding Extrato}" ItemTemplate="{StaticResource LinhaDoExtratoModelo}"/>
+                    <TextBlock Style="{StaticResource TextoSecundario}" Margin="0,12,0,0" Text="Nenhum pagamento lançado."
+                               Visibility="{Binding ExtratoVazio, Converter={StaticResource BoolParaVisibilidade}}"/>
+
+                    <ItemsControl Margin="0,16,0,0" ItemsSource="{Binding Totais}" ItemTemplate="{StaticResource TotalDoContratoModelo}"/>
+                    <Border BorderBrush="{StaticResource AsfaltoBrush}" BorderThickness="0,1,0,0" Margin="0,16,0,0" Padding="0,12,0,0">
+                        <Grid>
+                            <TextBlock Style="{StaticResource TextoSubtitulo}" VerticalAlignment="Center" Text="Saldo a pagar"/>
+                            <c:Valor Quantia="{Binding Locacao.SaldoDevedor}" Destaque="True" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Grid>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
