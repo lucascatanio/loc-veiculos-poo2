@@ -18,7 +18,7 @@ Locadora.Desktop (WPF) ──HTTP──▶ Locadora.Api ──▶ Locadora.Appli
 | `Locadora.Infra` | Domain | `LocadoraDbContext`, mapeamentos EF, repositórios, `UnitOfWork`, SQL manual, hash de senha |
 | `Locadora.Application` | Domain | AppServices (um por caso de uso/recurso) |
 | `Locadora.Api` | Application, Infra | Controllers, DTOs, Mapster, tratamento de erros, JWT |
-| `Locadora.Desktop` | nenhum projeto | Telas WPF (MVVM). Usa os DTOs da Api por link de arquivo |
+| `Locadora.Desktop` | nenhum projeto | Interface gráfica WPF (MVVM) que consome a API por HTTP. Usa os DTOs da Api por link de arquivo. Detalhes em [Desktop (WPF)](#desktop-wpf) |
 
 `Locadora.Api` referencia `Infra` só para registrar a injeção de dependência em `Program.cs`. Controllers nunca usam tipos da Infra.
 
@@ -48,6 +48,43 @@ POST /api/locacoes/{id}/pagamentos
   ← LocacaoResponse (Mapster)
 ```
 
+## Desktop (WPF)
+
+A interface gráfica é um app WPF em MVVM, o padrão do WPF para a ideia de MVC do enunciado:
+
+| MVC | No Desktop | Onde |
+|---|---|---|
+| Model | DTOs da API (`Locadora.Api/Dtos`, linkados) + `IApiClient` | `Servicos/ApiClient.cs` |
+| View | XAML só com layout e bindings; code-behind no máximo dispara o carregamento no `Loaded` | `Views/` |
+| Controller | ViewModel: estado da tela e comandos (`[RelayCommand]`) | `ViewModels/` |
+
+### Organização
+
+| Pasta | Contém |
+|---|---|
+| `Servicos/` | `IApiClient`/`ApiClient` (um método por endpoint), `AuthHeaderHandler` (Bearer; 401 encerra a sessão), `SessaoUsuario`, `INavegacao`, `IDialogos`, `RegistroDeServicos` (DI) |
+| `ViewModels/` | Um por tela; `ViewModelBase.ExecutarAsync` cuida de `Ocupado` e `MensagemErro`; `Cadastros/CadastroViewModel<T>` é a base dos 4 cadastros; `Locacoes/` agrupa lista, contrato, retirada e devolução |
+| `Views/` | Um XAML por ViewModel, com a mesma estrutura de pastas |
+| `Controles/` | Componentes reutilizáveis: `PlacaMercosul`, `StatusSelo`, `Valor`, `MensagemErro`, `EstadoVazio`, `BarraBusca`, `CampoFormulario` |
+| `Temas/` | `Cores`, `Tipografia` (Barlow embutida), `Controles` (estilos), `Contrato` (vocabulário visual do contrato), `Telas` (liga ViewModel → View) |
+| `Conversores/` | Formatação para a tela: moeda, CPF, telefone, km, status |
+
+### Fluxo de um erro de regra até a tela
+
+```
+Domain lança DomainException("Já existe uma categoria com este nome.")
+  → ExcecaoHandler devolve ProblemDetails 422 com o texto em "detail"
+    → ApiClient lê o problem+json e lança ApiException
+      → ViewModelBase.ExecutarAsync põe o texto em MensagemErro
+        → o componente MensagemErro mostra junto do formulário
+```
+
+O front não repete regra de negócio. Ele só valida formato antes de enviar (ex.: "12,3,4" não é um valor) e mostra **pré-visualizações** (diárias, saldo, multa) que a API confirma ao gravar.
+
+### Identidade visual
+
+Direção "Pátio": fundo concreto claro, menu em asfalto, azul Mercosul como único acento, títulos em Barlow Condensed e a **placa Mercosul** como elemento de identidade em todas as telas com veículo. Cores de status só onde há informação (atraso em vermelho, vence hoje em amarelo); ações destrutivas como link vermelho (`LinkPerigoso`), nunca competindo com a ação principal.
+
 ## Convenções
 
 - **Interfaces de serviço:** todo serviço de entidade e todo AppService tem interface, na mesma pasta da implementação (`Domain/Servicos/IClienteService.cs` ao lado de `ClienteService.cs`; `Application/AppServices/IClienteAppService.cs` ao lado de `ClienteAppService.cs`). Quem consome recebe a interface: AppService recebe `IClienteService`, Controller recebe `IClienteAppService`. Registro sempre `AddScoped<IX, X>()`.
@@ -74,6 +111,11 @@ POST /api/locacoes/{id}/pagamentos
 | I — Segregação de interfaces | `Domain/Interfaces` | Um repositório por agregado; `IPainelConsulta` (só leitura, SQL manual) fica separada de `ILocacaoRepository`, então o painel não depende de métodos de escrita |
 | D — Inversão de dependência | `Domain/Interfaces/IUnitOfWork.cs` → `Infra/Repositorios/UnitOfWork.cs` | Domain define, Infra implementa, `Infra/DependencyInjection.cs` liga. O `.csproj` do Domain não referencia nada |
 | D — Inversão de dependência | `Application/AppServices/FuncionarioAppService.cs`, `Api/Controllers/FuncionariosController.cs` | Cada camada depende da interface da camada de baixo (`IFuncionarioService`, `IFuncionarioAppService`), nunca da classe concreta |
+| S — Responsabilidade única (Desktop) | `Desktop/ViewModels/Locacoes/` | Um ViewModel por tela (lista, contrato, retirada, devolução) e um por formulário embutido (`LancamentoDeEntradaViewModel`, `ProrrogacaoViewModel`); a View só faz layout |
+| O — Aberto/fechado (Desktop) | `Desktop/ViewModels/Cadastros/CadastroViewModel.cs` | Um cadastro novo herda a base e implementa os ganchos; lista, busca, salvar, inativar e reativar não mudam |
+| L — Substituição de Liskov (Desktop) | `Desktop/Servicos/AuthHeaderHandler.cs` | É um `DelegatingHandler`: entra no pipeline do `HttpClient` no lugar de qualquer handler, sem o `ApiClient` saber |
+| I — Segregação de interfaces (Desktop) | `Desktop/Servicos/INavegacao.cs`, `IDialogos.cs` | Cada ViewModel recebe só o que usa: navegar, confirmar ou falar com a API |
+| D — Inversão de dependência (Desktop) | `Desktop/Servicos/IApiClient.cs` | Nenhum ViewModel conhece `HttpClient`; todos recebem `IApiClient` pelo DI (`RegistroDeServicos`) |
 
 ## Onde está o Clean Code
 
@@ -89,6 +131,9 @@ POST /api/locacoes/{id}/pagamentos
 | Funções pequenas com uma responsabilidade; AppServices de 3 a 5 linhas por caso de uso | `Application/AppServices/LocacaoAppService.cs` |
 | Sem duplicação: conversão de enum e normalização de dados num lugar só | `Domain/Enums/ConversorEnum.cs`, `Cliente.NormalizarCpf`, `Funcionario.NormalizarEmail`, `Veiculo.NormalizarPlaca` |
 | Comentários só onde o código não explica o porquê | ex.: `DATEDIFF` em segundos no `PainelConsulta`, relógio real no `JwtTokenService` |
+| Desktop: nomes pela ação do usuário e pré-visualização explícita | `SalvarCommand`, `RegistrarRetiradaCommand`, `ResumoDaRetirada.PreverDiarias` |
+| Desktop: sem duplicação de XAML ou formatação | estilos em `Temas/`, componentes em `Controles/`, formatação em `Conversores/`, leitura de valores em `ValorMonetario` |
+| Desktop: ordem fixa nas classes e métodos curtos | campos → construtor → propriedades → comandos → métodos privados; ex.: `ViewModels/ShellViewModel.cs` |
 
 ## SQL manual
 

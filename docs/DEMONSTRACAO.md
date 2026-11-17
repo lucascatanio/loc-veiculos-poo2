@@ -1,48 +1,47 @@
 # Roteiro de demonstração
 
-Tudo pelo Swagger (`http://localhost:5056/swagger`), depois de fazer login e clicar em **Authorize**. Use os `id`s que cada resposta devolver.
+Pelo app (Locadora.Api + Locadora.Desktop rodando, veja o README). Entre com `admin@locadora.local` / `admin123`.
 
 ## 1. Cadastros
 
-| Endpoint | Corpo |
+| Tela | O que fazer |
 |---|---|
-| `POST /api/categorias` | `{ "nome": "Econômico", "valorDiaria": 150 }` |
-| `POST /api/veiculos` | `{ "placa": "ABC1D23", "marca": "Fiat", "modelo": "Argo", "ano": 2023, "cor": "Prata", "kmAtual": 10000, "categoriaId": 1 }` |
-| `POST /api/clientes` | `{ "nome": "Maria Silva", "cpf": "123.456.789-01", "cnh": "12345678901", "telefone": "(11) 98765-4321" }` |
+| Categorias | Nova categoria "Econômico", diária `150,00`. Tente salvar de novo com o mesmo nome: a mensagem da API aparece no formulário |
+| Veículos | Novo veículo com placa `abc-1d23` (vira ABC1D23 na placa desenhada), categoria Econômico, km 10000 |
+| Clientes | Novo cliente com CPF `123.456.789-01`, CNH de 11 dígitos e telefone `(11) 98765-4321` |
 
 ## 2. Retirada
 
-`POST /api/locacoes` com a data prevista **daqui a 3 dias** e entrada de R$ 100:
+Locações → **Registrar retirada**: escolha o cliente, o veículo e a devolução prevista **daqui a 3 dias**. Adicione uma entrada de R$ 100 em Pix.
 
-```json
-{ "clienteId": 1, "veiculoId": 1, "dataPrevistaDevolucao": "2026-11-20T10:00:00",
-  "entradas": [ { "valor": 100, "forma": "Pix" } ] }
-```
+O resumo à direita mostra **3 diárias, R$ 450,00 e saldo de R$ 350,00** antes de gravar. **Registrar retirada** abre o contrato, e o veículo some da lista de disponíveis.
 
-Esperado: 3 diárias, `valorPrevisto` 450, `saldoDevedor` 350. O veículo fica "Locado".
+## 3. Durante a locação (no contrato)
 
-## 3. Durante a locação
-
-- `POST /api/locacoes/{id}/pagamentos`: `{ "valor": 50, "forma": "Dinheiro" }`
-- `POST /api/locacoes/{id}/prorrogar`: `{ "novaDataPrevista": "<1 dia depois da prevista>" }` → o previsto vai para 600
-- `GET /api/painel`: a locação aparece em `vencendoHoje` quando a prevista é hoje
+- **Lançar entrada**: R$ 50 em Dinheiro; o extrato e o saldo atualizam.
+- **Prorrogar**: mais 1 dia; a prévia mostra 4 diárias e R$ 600,00 antes de confirmar.
+- **Painel**: a locação aparece em "Vencem hoje" quando a prevista é hoje.
 
 ## 4. Devolução com atraso (relógio adiantado)
 
-1. Pare a API e, em `src/Locadora.Api/appsettings.Development.json`, coloque `"Relogio": { "DeslocamentoHoras": 122 }` (≈ 26h depois da prevista de 4 dias). Rode de novo.
-2. `GET /api/locacoes/{id}/previa-devolucao` → 2 dias de atraso, **multa 360**.
-3. `GET /api/painel` → a mesma multa em `atrasadas`, calculada pelo **SQL manual**.
-4. `POST /api/locacoes/{id}/finalizar` com saídas que **não** fecham o saldo → 422 dizendo quanto falta.
-5. `POST /api/locacoes/{id}/finalizar` com `{ "kmDevolucao": 10800, "saidas": [ { "valor": <saldo da prévia>, "forma": "CartaoCredito" } ] }` → "Finalizada". O veículo volta "Disponivel" com o km novo.
+1. Feche o app e a API. Em `src/Locadora.Api/appsettings.Development.json`, coloque `"Relogio": { "DeslocamentoHoras": 122 }` (≈ 26h depois da prevista de 4 dias). Rode de novo.
+2. **Painel**: a locação está em "Atrasadas" com **multa estimada de R$ 360,00**, calculada pelo **SQL manual**.
+3. No contrato, **Registrar devolução**: a faixa diz "2 dias de atraso. Multa de R$ 360,00." e o saldo bate com o painel.
+4. Informe o km (10800) e um pagamento menor que o saldo: o indicador mostra "Falta R$ ..." e o botão fica desabilitado. Ajuste até "Saldo fechado" e **Confirmar devolução**.
+5. O contrato fica "Finalizada" e o veículo volta "Disponível" com o km novo (tela Veículos).
 6. Volte `DeslocamentoHoras` para `0`.
 
 ## 5. Regras que vale mostrar
 
 | Ação | Resultado |
 |---|---|
-| Abrir locação com veículo já locado | 422 |
-| Inativar cliente com locação aberta / veículo locado | 422 |
-| Entrada maior que o saldo | 422, e nada é gravado |
-| Devolver até 60 min depois da prevista | sem multa (tolerância) |
-| `POST /api/locacoes/{id}/cancelar` | veículo volta "Disponivel" com o mesmo km; as entradas continuam registradas |
-| Inativar um funcionário que está logado | o token dele para de valer na hora (401) |
+| Inativar um cliente com locação aberta | mensagem da API no formulário |
+| Enviar para manutenção um veículo locado | botão desabilitado (e a API também recusa) |
+| Inativar o próprio usuário em Funcionários | botão desabilitado, com a explicação |
+| Inativar outro funcionário logado em outra máquina | a sessão dele termina na próxima ação |
+| Cancelar locação | o veículo volta "Disponível" com o mesmo km; as entradas continuam no extrato |
+| Prorrogar uma locação vencida | ação desabilitada: "Registre a devolução." |
+
+## Pelo Swagger (alternativa)
+
+Em `http://localhost:5056/swagger`: `POST /api/auth/login` → **Authorize** com o token → `POST /api/categorias`, `/api/veiculos`, `/api/clientes`, `/api/locacoes` → `GET /api/locacoes/{id}/previa-devolucao` → `POST /api/locacoes/{id}/finalizar`.
