@@ -14,7 +14,7 @@ public partial class EntradaDaRetirada(Action aoMudar) : ObservableObject
 
     public bool Preenchida => !string.IsNullOrWhiteSpace(ValorDigitado);
 
-    public decimal? Valor => ValorEmReais.TentarLer(ValorDigitado, out var valor) ? valor : null;
+    public decimal? Valor => ValorMonetario.TentarLer(ValorDigitado, out var valor) ? valor : null;
 
     partial void OnValorDigitadoChanged(string value) => aoMudar();
 }

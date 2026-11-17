@@ -33,7 +33,7 @@ public partial class LancamentoDeEntradaViewModel(IApiClient api, Action<Locacao
     [RelayCommand]
     public async Task RegistrarEntradaAsync()
     {
-        if (!ValorEmReais.TentarLer(ValorDigitado, out var valor))
+        if (!ValorMonetario.TentarLer(ValorDigitado, out var valor))
         {
             MensagemErro = "Informe o valor da entrada, por exemplo 100,50.";
             return;

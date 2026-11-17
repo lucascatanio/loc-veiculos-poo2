@@ -25,6 +25,7 @@ public static class RegistroDeServicos
         servicos.AddTransient<LocacoesViewModel>();
         servicos.AddTransient<LocacaoDetalheViewModel>();
         servicos.AddTransient<NovaLocacaoViewModel>();
+        servicos.AddTransient<DevolucaoViewModel>();
         servicos.AddTransient<ClientesViewModel>();
         servicos.AddTransient<VeiculosViewModel>();
         servicos.AddTransient<CategoriasViewModel>();

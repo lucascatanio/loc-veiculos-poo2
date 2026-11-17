@@ -4,7 +4,13 @@ using Locadora.Desktop.ViewModels.Locacoes;
 
 namespace Locadora.Desktop.Desenvolvimento;
 
-// --login <email> <senha> entra sozinho; --tela <Painel|Locacoes|NovaLocacao|Clientes|Veiculos|Categorias|Funcionarios> abre direto nela; --locacao <id> abre o contrato dessa locação; --preencher-retirada <busca do cliente> preenche a nova locação com o primeiro cliente e veículo encontrados; --galeria abre a galeria de componentes.
+// Atalhos para abrir o app direto num estado e tirar prints (ignorados em Release):
+//   --login <email> <senha>          entra sozinho
+//   --tela <Chave|NovaLocacao>       abre a tela do menu ou a nova locação
+//   --locacao <id>                   abre o contrato da locação
+//   --devolucao <id>                 abre a devolução da locação
+//   --preencher-retirada <busca>     preenche a nova locação com o primeiro cliente e veículo encontrados
+//   --galeria                        abre a galeria de componentes
 public static class AtalhosDeDesenvolvimento
 {
     private const string TelaNovaLocacao = "NovaLocacao";
@@ -15,24 +21,39 @@ public static class AtalhosDeDesenvolvimento
         if (args.Contains("--galeria"))
             new GaleriaComponentes().Show();
 
-        var iLogin = Array.IndexOf(args, "--login");
-        if (iLogin < 0 || iLogin + 2 >= args.Length || principal.Conteudo is not LoginViewModel login) return;
+        if (!await EntrarAsync(principal, args) || principal.Conteudo is not ShellViewModel shell)
+            return;
 
-        login.Email = args[iLogin + 1];
-        login.Senha = args[iLogin + 2];
+        if (ValorDoArgumento(args, "--tela") is { } tela)
+            AbrirTela(shell, tela);
+
+        if (int.TryParse(ValorDoArgumento(args, "--locacao"), out var locacaoId))
+            shell.Navegacao.NavegarPara<LocacaoDetalheViewModel>(contrato => contrato.Carregar(locacaoId));
+
+        if (int.TryParse(ValorDoArgumento(args, "--devolucao"), out var devolucaoId))
+            shell.Navegacao.NavegarPara<DevolucaoViewModel>(devolucao => devolucao.Carregar(devolucaoId));
+
+        if (ValorDoArgumento(args, "--preencher-retirada") is { } busca
+            && shell.Navegacao.ViewModelAtual is NovaLocacaoViewModel retirada)
+            await PreencherRetiradaAsync(retirada, busca);
+    }
+
+    private static async Task<bool> EntrarAsync(MainViewModel principal, string[] args)
+    {
+        var posicao = Array.IndexOf(args, "--login");
+        if (posicao < 0 || posicao + 2 >= args.Length || principal.Conteudo is not LoginViewModel login)
+            return false;
+
+        login.Email = args[posicao + 1];
+        login.Senha = args[posicao + 2];
         await login.EntrarCommand.ExecuteAsync(null);
+        return true;
+    }
 
-        var iTela = Array.IndexOf(args, "--tela");
-        if (iTela >= 0 && iTela + 1 < args.Length && principal.Conteudo is ShellViewModel shell)
-            AbrirTela(shell, args[iTela + 1]);
-
-        var iLocacao = Array.IndexOf(args, "--locacao");
-        if (iLocacao >= 0 && iLocacao + 1 < args.Length && int.TryParse(args[iLocacao + 1], out var locacaoId) && principal.Conteudo is ShellViewModel aberto)
-            aberto.Navegacao.NavegarPara<LocacaoDetalheViewModel>(detalhe => detalhe.Carregar(locacaoId));
-
-        var iPreencher = Array.IndexOf(args, "--preencher-retirada");
-        if (iPreencher >= 0 && iPreencher + 1 < args.Length && principal.Conteudo is ShellViewModel { Navegacao.ViewModelAtual: NovaLocacaoViewModel retirada })
-            await PreencherRetiradaAsync(retirada, args[iPreencher + 1]);
+    private static string? ValorDoArgumento(string[] args, string nome)
+    {
+        var posicao = Array.IndexOf(args, nome);
+        return posicao >= 0 && posicao + 1 < args.Length ? args[posicao + 1] : null;
     }
 
     private static void AbrirTela(ShellViewModel shell, string chave)

@@ -27,7 +27,7 @@ public partial class NovaLocacaoViewModel : ViewModelBase
     {
         _api = api;
         _navegacao = navegacao;
-        var devolucaoPadrao = ProximaHoraCheia(DateTime.Now.AddDays(1));
+        var devolucaoPadrao = HoraCheiaAnterior(DateTime.Now.AddDays(1));
         _dataDevolucao = devolucaoPadrao.Date;
         _horaDevolucao = devolucaoPadrao.ToString(FormatoParaExibirHora, PtBr);
         Entradas.CollectionChanged += (_, _) => AtualizarResumo();
@@ -235,6 +235,7 @@ public partial class NovaLocacaoViewModel : ViewModelBase
         RegistrarRetiradaCommand.NotifyCanExecuteChanged();
     }
 
-    private static DateTime ProximaHoraCheia(DateTime momento) =>
-        new DateTime(momento.Year, momento.Month, momento.Day, momento.Hour, 0, 0).AddHours(1);
+    // Arredonda para baixo: para cima passaria de 24h e o padrão já nasceria com 2 diárias.
+    private static DateTime HoraCheiaAnterior(DateTime momento) =>
+        new DateTime(momento.Year, momento.Month, momento.Day, momento.Hour, 0, 0);
 }
