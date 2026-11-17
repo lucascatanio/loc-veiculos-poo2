@@ -19,9 +19,6 @@ public partial class LocacoesViewModel : ViewModelBase
     public string Titulo => "Locações";
     public IReadOnlyList<OpcaoDeStatus> Opcoes => OpcaoDeStatus.Todas;
 
-    // Será ligado quando existir a tela de retirada.
-    public IRelayCommand NovaLocacaoCommand { get; } = ComandoIndisponivel.Criar();
-
     [ObservableProperty]
     private OpcaoDeStatus _statusSelecionado;
 
@@ -48,6 +45,9 @@ public partial class LocacoesViewModel : ViewModelBase
         Carregou = true;
         OnPropertyChanged(nameof(ListaVazia));
     }
+
+    [RelayCommand]
+    private void NovaLocacao() => _navegacao.NavegarPara<NovaLocacaoViewModel>();
 
     partial void OnStatusSelecionadoChanged(OpcaoDeStatus value) => _ = CarregarLocacoesAsync();
 

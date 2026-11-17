@@ -11,6 +11,7 @@
     <DataTemplate DataType="{x:Type vm:PainelViewModel}"><views:PainelView/></DataTemplate>
     <DataTemplate DataType="{x:Type vmLocacoes:LocacoesViewModel}"><viewsLocacoes:LocacoesView/></DataTemplate>
     <DataTemplate DataType="{x:Type vmLocacoes:LocacaoDetalheViewModel}"><viewsLocacoes:LocacaoDetalheView/></DataTemplate>
+    <DataTemplate DataType="{x:Type vmLocacoes:NovaLocacaoViewModel}"><viewsLocacoes:NovaLocacaoView/></DataTemplate>
     <DataTemplate DataType="{x:Type vm:ClientesViewModel}"><views:ClientesView/></DataTemplate>
     <DataTemplate DataType="{x:Type vm:VeiculosViewModel}"><views:VeiculosView/></DataTemplate>
     <DataTemplate DataType="{x:Type vm:CategoriasViewModel}"><views:CategoriasView/></DataTemplate>

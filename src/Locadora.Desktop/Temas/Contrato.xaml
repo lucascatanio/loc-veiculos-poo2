@@ -1,0 +1,28 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:c="clr-namespace:Locadora.Desktop.Controles">
+
+    <!-- Vocabulário do contrato, compartilhado entre a tela do contrato e o resumo da nova locação -->
+    <DataTemplate x:Key="FatoDoContratoModelo">
+        <StackPanel Margin="0,0,0,16">
+            <TextBlock Style="{StaticResource TextoMiudo}" Text="{Binding Rotulo}"/>
+            <TextBlock Style="{StaticResource TextoDestaque}" TextWrapping="Wrap" Text="{Binding Texto}"/>
+        </StackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="TotalDoContratoModelo">
+        <Grid Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Style="{StaticResource TextoSecundario}" VerticalAlignment="Center" Text="{Binding Rotulo}"/>
+            <c:Valor Grid.Column="1" Quantia="{Binding Valor}"/>
+        </Grid>
+    </DataTemplate>
+
+    <!-- Com DisplayMemberPath a caixa de seleção da ComboBox do tema mostra o ToString do item; o ItemTemplate resolve -->
+    <DataTemplate x:Key="NomeDaOpcao">
+        <TextBlock Text="{Binding Nome}"/>
+    </DataTemplate>
+</ResourceDictionary>

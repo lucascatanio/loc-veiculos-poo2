@@ -11,13 +11,6 @@
             <Setter Property="Padding" Value="0,10"/>
         </Style>
 
-        <DataTemplate x:Key="FatoDoContratoModelo">
-            <StackPanel Margin="0,0,0,16">
-                <TextBlock Style="{StaticResource TextoMiudo}" Text="{Binding Rotulo}"/>
-                <TextBlock Style="{StaticResource TextoDestaque}" TextWrapping="Wrap" Text="{Binding Texto}"/>
-            </StackPanel>
-        </DataTemplate>
-
         <DataTemplate x:Key="LinhaDoExtratoModelo">
             <Border Style="{StaticResource LinhaDoExtratoBorda}">
                 <Grid>
@@ -33,17 +26,6 @@
                     <c:Valor Grid.Column="3" Quantia="{Binding Valor}"/>
                 </Grid>
             </Border>
-        </DataTemplate>
-
-        <DataTemplate x:Key="TotalDoContratoModelo">
-            <Grid Margin="0,8,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Style="{StaticResource TextoSecundario}" VerticalAlignment="Center" Text="{Binding Rotulo}"/>
-                <c:Valor Grid.Column="1" Quantia="{Binding Valor}"/>
-            </Grid>
         </DataTemplate>
     </UserControl.Resources>
 
@@ -72,7 +54,7 @@
                                 <TextBox Width="140" Text="{Binding ValorDigitado, UpdateSourceTrigger=PropertyChanged}"/>
                             </c:CampoFormulario>
                             <c:CampoFormulario Rotulo="Forma de pagamento" Margin="12,0,0,0">
-                                <ComboBox Width="188" ItemsSource="{Binding Formas}" DisplayMemberPath="Nome"
+                                <ComboBox Width="188" ItemsSource="{Binding Formas}" ItemTemplate="{StaticResource NomeDaOpcao}"
                                           SelectedItem="{Binding FormaSelecionada}"/>
                             </c:CampoFormulario>
                         </StackPanel>

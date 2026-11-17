@@ -8,6 +8,7 @@
                 <ResourceDictionary Source="Temas/Cores.xaml"/>
                 <ResourceDictionary Source="Temas/Tipografia.xaml"/>
                 <ResourceDictionary Source="Temas/Controles.xaml"/>
+                <ResourceDictionary Source="Temas/Contrato.xaml"/>
                 <ResourceDictionary Source="Temas/Telas.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
