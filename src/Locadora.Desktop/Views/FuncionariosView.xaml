@@ -88,8 +88,6 @@
             <c:EstadoVazio Grid.Row="1"
                            VerticalAlignment="Top"
                            Texto="Nenhum funcionário encontrado."
-                           TextoAcao="Novo funcionário"
-                           Comando="{Binding NovoCommand}"
                            Visibility="{Binding ListaVazia, Converter={StaticResource BoolParaVisibilidade}}"/>
         </Grid>
 
@@ -128,8 +126,8 @@
                     <Button Style="{StaticResource Primario}"
                             Content="Salvar funcionário"
                             Command="{Binding SalvarCommand}"/>
-                    <Button Content="Novo funcionário"
-                            Command="{Binding NovoCommand}"
+                    <Button Content="Limpar formulário"
+                            Command="{Binding LimparFormularioCommand}"
                             Margin="12,0,0,0"/>
                     <Button Style="{StaticResource InativarFuncionario}"
                             Content="Inativar funcionário"

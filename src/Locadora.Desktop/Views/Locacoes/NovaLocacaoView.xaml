@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:c="clr-namespace:Locadora.Desktop.Controles"
              xmlns:conv="clr-namespace:Locadora.Desktop.Conversores"
+             xmlns:comp="clr-namespace:Locadora.Desktop.Comportamentos"
              xmlns:vm="clr-namespace:Locadora.Desktop.ViewModels.Locacoes"
              xmlns:api="clr-namespace:Locadora.Api.Dtos.Clientes"
              Style="{StaticResource TelaBase}"
@@ -62,7 +63,8 @@
 
         <DataTemplate x:Key="EntradaDaRetiradaModelo" DataType="{x:Type vm:EntradaDaRetirada}">
             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                <TextBox Width="140" Text="{Binding ValorDigitado, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Width="140" MaxLength="11" comp:EntradaRestrita.Modo="Decimal"
+                         Text="{Binding ValorDigitado, UpdateSourceTrigger=PropertyChanged}"/>
                 <ComboBox Width="188" Margin="12,0,0,0" ItemsSource="{Binding Formas}" ItemTemplate="{StaticResource NomeDaOpcao}"
                           SelectedItem="{Binding FormaSelecionada}"/>
                 <Button Style="{StaticResource Link}" Margin="12,0,0,0" VerticalAlignment="Center" Content="Remover"
