@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:c="clr-namespace:Locadora.Desktop.Controles"
              xmlns:conv="clr-namespace:Locadora.Desktop.Conversores"
+             xmlns:comp="clr-namespace:Locadora.Desktop.Comportamentos"
              Style="{StaticResource TelaBase}">
     <UserControl.Resources>
         <conv:CpfConversor x:Key="Cpf"/>
@@ -77,8 +78,6 @@
             <c:EstadoVazio Grid.Row="1"
                            VerticalAlignment="Top"
                            Texto="Nenhum cliente encontrado."
-                           TextoAcao="Novo cliente"
-                           Comando="{Binding NovoCommand}"
                            Visibility="{Binding ListaVazia, Converter={StaticResource BoolParaVisibilidade}}"/>
         </Grid>
 
@@ -100,10 +99,11 @@
                 </c:CampoFormulario>
 
                 <c:CampoFormulario Rotulo="CPF"
-                                   Ajuda="Só números ou com pontos e traço."
+                                   Ajuda="11 dígitos, só números."
                                    Margin="0,16,0,0"
                                    Visibility="{Binding Editando, Converter={StaticResource BoolParaVisibilidadeInvertida}}">
-                    <TextBox Text="{Binding Cpf, UpdateSourceTrigger=PropertyChanged}" MaxLength="14"/>
+                    <TextBox Text="{Binding Cpf, UpdateSourceTrigger=PropertyChanged}" MaxLength="11"
+                             comp:EntradaRestrita.Modo="Digitos"/>
                 </c:CampoFormulario>
                 <c:CampoFormulario Rotulo="CPF"
                                    Ajuda="O CPF não pode ser alterado."
@@ -114,15 +114,17 @@
                 </c:CampoFormulario>
 
                 <c:CampoFormulario Rotulo="CNH"
-                                   Ajuda="11 dígitos."
+                                   Ajuda="11 dígitos, só números."
                                    Margin="0,16,0,0">
-                    <TextBox Text="{Binding Cnh, UpdateSourceTrigger=PropertyChanged}" MaxLength="20"/>
+                    <TextBox Text="{Binding Cnh, UpdateSourceTrigger=PropertyChanged}" MaxLength="11"
+                             comp:EntradaRestrita.Modo="Digitos"/>
                 </c:CampoFormulario>
 
                 <c:CampoFormulario Rotulo="Telefone"
-                                   Ajuda="Com DDD, como (11) 98765-4321."
+                                   Ajuda="DDD + número, só números, como 11987654321."
                                    Margin="0,16,0,0">
-                    <TextBox Text="{Binding Telefone, UpdateSourceTrigger=PropertyChanged}" MaxLength="20"/>
+                    <TextBox Text="{Binding Telefone, UpdateSourceTrigger=PropertyChanged}" MaxLength="11"
+                             comp:EntradaRestrita.Modo="Digitos"/>
                 </c:CampoFormulario>
 
                 <c:CampoFormulario Rotulo="E-mail (opcional)" Margin="0,16,0,0">
@@ -135,8 +137,8 @@
                     <Button Style="{StaticResource Primario}"
                             Content="Salvar cliente"
                             Command="{Binding SalvarCommand}"/>
-                    <Button Content="Novo cliente"
-                            Command="{Binding NovoCommand}"
+                    <Button Content="Limpar formulário"
+                            Command="{Binding LimparFormularioCommand}"
                             Margin="12,0,0,0"/>
                     <Button Style="{StaticResource LinkPerigoso}"
                             Content="Inativar cliente"

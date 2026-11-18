@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:c="clr-namespace:Locadora.Desktop.Controles"
              xmlns:conv="clr-namespace:Locadora.Desktop.Conversores"
+             xmlns:comp="clr-namespace:Locadora.Desktop.Comportamentos"
              Style="{StaticResource TelaBase}">
     <UserControl.Resources>
         <conv:QuilometragemConversor x:Key="Quilometragem"/>
@@ -108,8 +109,6 @@
             <c:EstadoVazio Grid.Row="1"
                            VerticalAlignment="Top"
                            Texto="Nenhum veículo encontrado."
-                           TextoAcao="Novo veículo"
-                           Comando="{Binding NovoCommand}"
                            Visibility="{Binding ListaSemResultados, Converter={StaticResource BoolParaVisibilidade}}"/>
         </Grid>
 
@@ -135,8 +134,9 @@
 
                         <c:CampoFormulario Rotulo="Placa">
                             <TextBox Text="{Binding Placa, UpdateSourceTrigger=PropertyChanged}"
-                                     MaxLength="8"
+                                     MaxLength="7"
                                      CharacterCasing="Upper"
+                                     comp:EntradaRestrita.Modo="Placa"
                                      IsReadOnly="{Binding Editando, Mode=OneWay}"/>
                         </c:CampoFormulario>
                         <c:PlacaMercosul Grid.Column="1"
@@ -161,7 +161,8 @@
                         </Grid.ColumnDefinitions>
 
                         <c:CampoFormulario Rotulo="Ano" Erro="{Binding ErroAno}">
-                            <TextBox Text="{Binding AnoTexto, UpdateSourceTrigger=PropertyChanged}" MaxLength="4"/>
+                            <TextBox Text="{Binding AnoTexto, UpdateSourceTrigger=PropertyChanged}" MaxLength="4"
+                                     comp:EntradaRestrita.Modo="Digitos"/>
                         </c:CampoFormulario>
                         <c:CampoFormulario Grid.Column="1" Rotulo="Cor" Margin="16,0,0,0">
                             <TextBox Text="{Binding Cor, UpdateSourceTrigger=PropertyChanged}" MaxLength="30"/>
@@ -172,7 +173,8 @@
                                        Erro="{Binding ErroKm}"
                                        Margin="0,16,0,0"
                                        Visibility="{Binding Editando, Converter={StaticResource BoolParaVisibilidadeInvertida}}">
-                        <TextBox Text="{Binding KmInicialTexto, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Text="{Binding KmInicialTexto, UpdateSourceTrigger=PropertyChanged}" MaxLength="7"
+                                 comp:EntradaRestrita.Modo="Digitos"/>
                     </c:CampoFormulario>
                     <c:CampoFormulario Rotulo="Km atual"
                                        Margin="0,16,0,0"
@@ -201,8 +203,8 @@
                         <Button Style="{StaticResource Primario}"
                                 Content="Salvar veículo"
                                 Command="{Binding SalvarCommand}"/>
-                        <Button Content="Novo veículo"
-                                Command="{Binding NovoCommand}"
+                        <Button Content="Limpar formulário"
+                                Command="{Binding LimparFormularioCommand}"
                                 Margin="12,0,0,0"/>
                     </StackPanel>
 

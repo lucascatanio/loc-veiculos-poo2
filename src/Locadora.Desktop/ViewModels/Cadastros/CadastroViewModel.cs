@@ -83,7 +83,7 @@ public abstract partial class CadastroViewModel<TItem> : ViewModelBase where TIt
     }
 
     [RelayCommand(CanExecute = nameof(NaoOcupado))]
-    private void Novo()
+    private void LimparFormulario()
     {
         MensagemErro = null;
         DefinirSelecaoSemAplicar(null);
@@ -205,7 +205,7 @@ public abstract partial class CadastroViewModel<TItem> : ViewModelBase where TIt
 
     private void NotificarComandosDeAcao()
     {
-        NovoCommand.NotifyCanExecuteChanged();
+        LimparFormularioCommand.NotifyCanExecuteChanged();
         SalvarCommand.NotifyCanExecuteChanged();
         InativarCommand.NotifyCanExecuteChanged();
         ReativarCommand.NotifyCanExecuteChanged();

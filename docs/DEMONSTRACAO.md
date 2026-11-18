@@ -7,8 +7,8 @@ Pelo app (Locadora.Api + Locadora.Desktop rodando, veja o README). Entre com `ad
 | Tela | O que fazer |
 |---|---|
 | Categorias | Nova categoria "Econômico", diária `150,00`. Tente salvar de novo com o mesmo nome: a mensagem da API aparece no formulário |
-| Veículos | Novo veículo com placa `abc-1d23` (vira ABC1D23 na placa desenhada), categoria Econômico, km 10000 |
-| Clientes | Novo cliente com CPF `123.456.789-01`, CNH de 11 dígitos e telefone `(11) 98765-4321` |
+| Veículos | Novo veículo com placa `abc1d23` (o campo aceita só letras e números; vira ABC1D23 na placa desenhada), categoria Econômico, km 10000 |
+| Clientes | Novo cliente com CPF `12345678901`, CNH de 11 dígitos e telefone `11987654321` (os campos aceitam só números) |
 
 ## 2. Retirada
 
