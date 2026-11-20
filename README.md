@@ -11,6 +11,11 @@
    dotnet build Locadora.sln
    dotnet ef database update -p src/Locadora.Infra -s src/Locadora.Api
    ```
+   Para apagar os dados e popular com uma locadora de exemplo (categorias, frota, clientes e locações, com uma atrasada e uma vencendo hoje), rode:
+   ```bash
+   sqlcmd -S "(localdb)\MSSQLLocalDB" -d Locadora -f 65001 -i scripts/dados-apresentacao.sql
+   ```
+   As datas partem da hora em que o script roda; rode de novo no dia da apresentação.
 3. No seletor ao lado do botão ▶, escolha o perfil **API + Desktop** e aperte **F5**. Ele vem pronto no `Locadora.slnLaunch` e sobe a API e o app juntos.
 4. No app, entre com `admin@locadora.local` / `admin123`.
 
