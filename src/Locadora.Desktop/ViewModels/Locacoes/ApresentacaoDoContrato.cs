@@ -10,7 +10,7 @@ public sealed record LinhaDoExtrato(DateTime Data, string Tipo, string Forma, de
 {
     public static LinhaDoExtrato De(PagamentoResponse pagamento) => new(
         pagamento.DataPagamento,
-        pagamento.Tipo == "Saida" ? "Saída" : pagamento.Tipo,
+        pagamento.Tipo == "Saida" ? "Na devolução" : pagamento.Tipo,
         FormasDePagamento.NomeDe(pagamento.Forma),
         pagamento.Valor);
 }

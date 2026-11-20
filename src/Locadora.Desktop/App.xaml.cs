@@ -17,6 +17,8 @@ public partial class App : Application
     {
         base.OnStartup(e);
         DefinirCulturaBrasileira();
+        DispatcherUnhandledException += AoOcorrerErroNaoTratado;
+        TaskScheduler.UnobservedTaskException += (_, args) => args.SetObserved();
 
         var builder = Host.CreateApplicationBuilder(new HostApplicationBuilderSettings
         {
@@ -35,6 +37,20 @@ public partial class App : Application
 #if DEBUG
         await Desenvolvimento.AtalhosDeDesenvolvimento.AplicarAsync(_host.Services.GetRequiredService<MainViewModel>(), e.Args);
 #endif
+    }
+
+    // Última rede de segurança: o que escapar dos ViewModels avisa o funcionário em vez de fechar o app.
+    private void AoOcorrerErroNaoTratado(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+    {
+        e.Handled = true;
+        var dialogos = _host?.Services.GetService<IDialogos>();
+        const string titulo = "Algo deu errado";
+        const string mensagem = "Ocorreu um erro inesperado. A última ação pode não ter sido concluída; confira e tente de novo.";
+
+        if (dialogos is not null)
+            dialogos.Informar(titulo, mensagem);
+        else
+            MessageBox.Show(mensagem, titulo);
     }
 
     // Sem isso o WPF formata datas e números (StringFormat) em en-US, independente do Windows.

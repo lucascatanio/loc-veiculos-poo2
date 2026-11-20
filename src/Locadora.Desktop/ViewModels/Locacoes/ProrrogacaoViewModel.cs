@@ -10,6 +10,7 @@ public partial class ProrrogacaoViewModel(IApiClient api, Action<LocacaoResponse
 {
     private const string FormatoDaData = "dd/MM/yyyy";
     private const string FormatoDaHora = "HH:mm";
+    private static readonly string[] FormatosParaLerDataEHora = [$"{FormatoDaData} H:mm", $"{FormatoDaData} HH:mm"];
     private const double HorasPorDiaria = 24;
     private static readonly CultureInfo PtBr = CultureInfo.GetCultureInfo("pt-BR");
 
@@ -79,7 +80,7 @@ public partial class ProrrogacaoViewModel(IApiClient api, Action<LocacaoResponse
     private bool PodeAbrir() => Locacao is not null && !EstaVencida;
 
     private bool TentarLerNovaData(out DateTime novaData) =>
-        DateTime.TryParseExact($"{DataDigitada} {HoraDigitada}", $"{FormatoDaData} {FormatoDaHora}", PtBr, DateTimeStyles.None, out novaData);
+        DateTime.TryParseExact($"{DataDigitada} {HoraDigitada.Trim()}", FormatosParaLerDataEHora, PtBr, DateTimeStyles.None, out novaData);
 
     private bool TentarLerNovaDataValida(out DateTime novaData) =>
         TentarLerNovaData(out novaData) && EhPosteriorAoPrevisto(novaData);

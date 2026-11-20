@@ -26,7 +26,7 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="128"/>
-                        <ColumnDefinition Width="72"/>
+                        <ColumnDefinition Width="104"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
@@ -130,7 +130,7 @@
                     <Grid Margin="0,12,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="128"/>
-                            <ColumnDefinition Width="72"/>
+                            <ColumnDefinition Width="104"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>

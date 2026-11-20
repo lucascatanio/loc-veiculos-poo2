@@ -9,6 +9,7 @@ public class Locacao
 {
     public const decimal TAXA_MULTA = 0.20m;
     public const int TOLERANCIA_MINUTOS = 60;
+    public const decimal VALOR_MAXIMO = 99_999_999.99m;
 
     private readonly List<Pagamento> _pagamentos = [];
 
@@ -39,6 +40,7 @@ public class Locacao
         if (dataPrevista <= dataRetirada)
             throw new DomainException("A data prevista de devolução deve ser posterior à retirada.");
 
+        var valorPrevisto = CalcularPrevisto(dataRetirada, dataPrevista, veiculo.Categoria.ValorDiaria);
         veiculo.Alocar();
 
         Cliente = cliente;
@@ -50,7 +52,7 @@ public class Locacao
         KmRetirada = veiculo.KmAtual;
         ObservacaoRetirada = string.IsNullOrWhiteSpace(observacao) ? null : observacao.Trim();
         ValorDiaria = veiculo.Categoria.ValorDiaria;
-        ValorPrevisto = Math.Round(ContarDiarias(dataRetirada, dataPrevista) * ValorDiaria, 2, MidpointRounding.AwayFromZero);
+        ValorPrevisto = valorPrevisto;
         ValorTotal = ValorPrevisto;
         ValorMulta = 0;
         ValorPago = 0;
@@ -107,6 +109,7 @@ public class Locacao
 
         var multa = CalcularMulta(dataDevolucao);
         var total = ValorPrevisto + multa;
+        GarantirDentroDoLimite(total);
         var saldo = total - ValorPago;
         var diferenca = saldo - saidas.Sum(s => s.Valor);
         if (diferenca != 0)
@@ -143,8 +146,10 @@ public class Locacao
         if (novaDataPrevista <= DataPrevistaDevolucao)
             throw new DomainException("A nova data deve ser posterior à data prevista atual.");
 
+        var novoPrevisto = CalcularPrevisto(DataRetirada, novaDataPrevista, ValorDiaria);
+
         DataPrevistaDevolucao = novaDataPrevista;
-        ValorPrevisto = Math.Round(ContarDiarias(DataRetirada, novaDataPrevista) * ValorDiaria, 2, MidpointRounding.AwayFromZero);
+        ValorPrevisto = novoPrevisto;
         ValorTotal = ValorPrevisto;
     }
 
@@ -159,4 +164,19 @@ public class Locacao
 
     private static int ContarDiarias(DateTime inicio, DateTime fim) =>
         Math.Max(1, (int)Math.Ceiling((fim - inicio).TotalHours / 24));
+
+    private static decimal CalcularPrevisto(DateTime inicio, DateTime fim, decimal valorDiaria)
+    {
+        var previsto = Math.Round(ContarDiarias(inicio, fim) * valorDiaria, 2, MidpointRounding.AwayFromZero);
+        GarantirDentroDoLimite(previsto);
+        return previsto;
+    }
+
+    // As colunas de valor são decimal(10,2); acima disso o banco recusaria e a locação ficaria travada.
+    private static void GarantirDentroDoLimite(decimal valor)
+    {
+        if (valor > VALOR_MAXIMO)
+            throw new DomainException(
+                $"O valor da locação passaria do limite de R$ {VALOR_MAXIMO.ToString("N2", new CultureInfo("pt-BR"))}. Reduza o período.");
+    }
 }
