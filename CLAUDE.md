@@ -14,6 +14,7 @@ dotnet run --project src/Locadora.Desktop
 dotnet ef migrations add <Nome> -p src/Locadora.Infra -s src/Locadora.Api
 dotnet ef migrations remove     -p src/Locadora.Infra -s src/Locadora.Api
 dotnet ef database update       -p src/Locadora.Infra -s src/Locadora.Api
+sqlcmd -S "(localdb)\MSSQLLocalDB" -d Locadora -f 65001 -i scripts/dados-apresentacao.sql   # apaga tudo (menos o admin) e popula dados de exemplo
 
 dotnet add src/<Projeto> package <Pacote> -v 10.0.15   # sem -v puxa a 11.x, que não roda em net10.0
 ```
