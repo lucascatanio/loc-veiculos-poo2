@@ -5,6 +5,8 @@ namespace Locadora.Desktop.ViewModels;
 
 public abstract partial class ViewModelBase : ObservableObject
 {
+    private const string MensagemErroInesperado = "Ocorreu um erro inesperado. Tente de novo.";
+
     [ObservableProperty]
     private bool _ocupado;
 
@@ -23,6 +25,11 @@ public abstract partial class ViewModelBase : ObservableObject
         catch (ApiException ex)
         {
             MensagemErro = ex.Detalhe;
+        }
+        // Qualquer outra falha vira mensagem na tela em vez de derrubar o app.
+        catch (Exception)
+        {
+            MensagemErro = MensagemErroInesperado;
         }
         finally
         {

@@ -17,6 +17,9 @@ public enum ModoDeEntrada
 // É só ajuda de preenchimento: quem decide o que é válido continua sendo a API.
 public static partial class EntradaRestrita
 {
+    private const string Ponto = ".";
+    private const string Virgula = ",";
+
     public static readonly DependencyProperty ModoProperty = DependencyProperty.RegisterAttached(
         "Modo", typeof(ModoDeEntrada), typeof(EntradaRestrita),
         new PropertyMetadata(ModoDeEntrada.Livre, AoMudarModo));
@@ -42,7 +45,17 @@ public static partial class EntradaRestrita
     private static void AoDigitar(object sender, TextCompositionEventArgs e)
     {
         var caixa = (TextBox)sender;
-        e.Handled = !Aceita(GetModo(caixa), TextoApos(caixa, e.Text));
+        var modo = GetModo(caixa);
+
+        // Teclado americano e numpad digitam ponto; descartá-lo transformaria 150.50 em 15050.
+        if (modo == ModoDeEntrada.Decimal && e.Text == Ponto)
+        {
+            e.Handled = true;
+            InserirSeAceito(caixa, modo, Virgula);
+            return;
+        }
+
+        e.Handled = !Aceita(modo, TextoApos(caixa, e.Text));
     }
 
     // A barra de espaço não gera PreviewTextInput no TextBox.
@@ -60,7 +73,7 @@ public static partial class EntradaRestrita
 
         var caixa = (TextBox)sender;
         var modo = GetModo(caixa);
-        var aproveitado = new string(colado.Where(c => CaractereValido(modo, c)).ToArray());
+        var aproveitado = new string(NormalizarColado(modo, colado).Where(c => CaractereValido(modo, c)).ToArray());
 
         if (caixa.MaxLength > 0)
         {
@@ -68,8 +81,26 @@ public static partial class EntradaRestrita
             aproveitado = aproveitado[..Math.Clamp(espaco, 0, aproveitado.Length)];
         }
 
-        if (aproveitado.Length > 0 && Aceita(modo, TextoApos(caixa, aproveitado)))
-            caixa.SelectedText = aproveitado;
+        if (aproveitado.Length > 0)
+            InserirSeAceito(caixa, modo, aproveitado);
+    }
+
+    // "150.50" (sem vírgula, um ponto só) é decimal; em "1.234,56" o ponto é milhar e é descartado.
+    private static string NormalizarColado(ModoDeEntrada modo, string colado) => modo switch
+    {
+        ModoDeEntrada.Decimal when !colado.Contains(Virgula) && colado.Count(c => c == '.') == 1
+            => colado.Replace(Ponto, Virgula),
+        ModoDeEntrada.Placa => colado.ToUpperInvariant(),
+        _ => colado
+    };
+
+    private static void InserirSeAceito(TextBox caixa, ModoDeEntrada modo, string texto)
+    {
+        if (!Aceita(modo, TextoApos(caixa, texto))) return;
+
+        var inicio = caixa.SelectionStart;
+        caixa.SelectedText = texto;
+        caixa.CaretIndex = inicio + texto.Length;
     }
 
     private static string TextoApos(TextBox caixa, string inserido) =>

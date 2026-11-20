@@ -16,7 +16,8 @@ public partial class NovaLocacaoViewModel : ViewModelBase
     private const int StatusDeConflito = 409;
     private const int StatusDeRegraDeNegocio = 422;
     private const string FormatoParaExibirHora = "HH:mm";
-    private const string FormatoParaLerHora = @"hh\:mm";
+    // Aceita "9:30" e "09:30".
+    private static readonly string[] FormatosParaLerHora = [@"h\:mm", @"hh\:mm"];
     private static readonly CultureInfo PtBr = CultureInfo.GetCultureInfo("pt-BR");
 
     private readonly IApiClient _api;
@@ -222,7 +223,7 @@ public partial class NovaLocacaoViewModel : ViewModelBase
     private DateTime? LerDevolucaoPrevista()
     {
         if (DataDevolucao is not { } data) return null;
-        var horaValida = TimeSpan.TryParseExact(HoraDevolucao.Trim(), FormatoParaLerHora, PtBr, out var hora);
+        var horaValida = TimeSpan.TryParseExact(HoraDevolucao.Trim(), FormatosParaLerHora, PtBr, out var hora);
         return horaValida ? data.Date + hora : null;
     }
 
