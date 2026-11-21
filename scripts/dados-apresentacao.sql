@@ -1,11 +1,11 @@
-/*
+﻿/*
     Dados da apresentação: apaga tudo, menos o admin, e cria uma locadora em funcionamento.
 
     Pré-requisito: banco criado com
         dotnet ef database update -p src/Locadora.Infra -s src/Locadora.Api
 
     Rodar (ou abrir no SSMS / extensão SQL Server do VS Code e executar):
-        sqlcmd -S "(localdb)\MSSQLLocalDB" -d Locadora -f 65001 -i scripts/dados-apresentacao.sql
+        sqlcmd -S "(localdb)\MSSQLLocalDB" -d Locadora -i scripts/dados-apresentacao.sql
 
     Login: admin@locadora.local / admin123
 
