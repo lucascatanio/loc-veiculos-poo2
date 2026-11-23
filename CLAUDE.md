@@ -7,6 +7,7 @@ Arquitetura, responsabilidade de cada camada e convenções: [docs/ARQUITETURA.m
 ```bash
 dotnet tool restore                      # instala o dotnet-ef local (dotnet-tools.json)
 dotnet build Locadora.sln
+dotnet test tests/Locadora.Domain.Tests  # filtros: --filter "Requisito=R1 Devolução com multa" ou "Tecnica=Transição de estados"
 
 dotnet run --project src/Locadora.Api    # Swagger em http://localhost:5056/swagger
 dotnet run --project src/Locadora.Desktop

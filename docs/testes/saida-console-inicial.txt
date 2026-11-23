@@ -1,0 +1,88 @@
+Test run for c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\bin\Debug\net10.0\Locadora.Domain.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.64]     Locadora.Domain.Tests.R2_CicloDeVidaDaLocacao.LocacaoTransicaoEstadosTests.RegistrarPagamento_SaidaComLocacaoAberta_LancaExcecao [FAIL]
+[xUnit.net 00:00:01.65]     Locadora.Domain.Tests.R1_DevolucaoComMulta.CalculoMultaTests.CalcularPrevia_DevolucaoAntesDaRetirada_LancaExcecao [FAIL]
+  Failed Locadora.Domain.Tests.R2_CicloDeVidaDaLocacao.LocacaoTransicaoEstadosTests.RegistrarPagamento_SaidaComLocacaoAberta_LancaExcecao [320 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Locadora.Domain.Excecoes.DomainException)
+  Stack Trace:
+     at Locadora.Domain.Tests.R2_CicloDeVidaDaLocacao.LocacaoTransicaoEstadosTests.RegistrarPagamento_SaidaComLocacaoAberta_LancaExcecao() in c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\R2_CicloDeVidaDaLocacao\LocacaoTransicaoEstadosTests.cs:line 190
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Failed Locadora.Domain.Tests.R1_DevolucaoComMulta.CalculoMultaTests.CalcularPrevia_DevolucaoAntesDaRetirada_LancaExcecao [< 1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Locadora.Domain.Excecoes.DomainException)
+  Stack Trace:
+     at Locadora.Domain.Tests.R1_DevolucaoComMulta.CalculoMultaTests.CalcularPrevia_DevolucaoAntesDaRetirada_LancaExcecao() in c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\R1_DevolucaoComMulta\CalculoMultaTests.cs:line 61
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.68]     Locadora.Domain.Tests.R1_DevolucaoComMulta.FinalizarTabelaDecisaoTests.R6_DevolucaoAntesDaRetirada_LancaExcecao [FAIL]
+  Failed Locadora.Domain.Tests.R1_DevolucaoComMulta.FinalizarTabelaDecisaoTests.R6_DevolucaoAntesDaRetirada_LancaExcecao [< 1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Locadora.Domain.Excecoes.DomainException)
+  Stack Trace:
+     at Locadora.Domain.Tests.R1_DevolucaoComMulta.FinalizarTabelaDecisaoTests.R6_DevolucaoAntesDaRetirada_LancaExcecao() in c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\R1_DevolucaoComMulta\FinalizarTabelaDecisaoTests.cs:line 88
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:01.77]     Locadora.Domain.Tests.R3_StatusDoVeiculo.VeiculoServiceTests.GarantirPlacaDisponivelAsync_PlacaCadastradaEmOutroFormato_LancaExcecao(placa: " abc 1d23 ") [FAIL]
+[xUnit.net 00:00:01.77]     Locadora.Domain.Tests.R2_CicloDeVidaDaLocacao.LocacaoServiceCicloTests.ListarAsync_StatusQueNaoEhNomeDeEstado_LancaExcecao(status: "1") [FAIL]
+[xUnit.net 00:00:01.77]     Locadora.Domain.Tests.R3_StatusDoVeiculo.VeiculoServiceTests.GarantirPlacaDisponivelAsync_PlacaCadastradaEmOutroFormato_LancaExcecao(placa: "abc1d23") [FAIL]
+  Failed Locadora.Domain.Tests.R3_StatusDoVeiculo.VeiculoServiceTests.GarantirPlacaDisponivelAsync_PlacaCadastradaEmOutroFormato_LancaExcecao(placa: " abc 1d23 ") [1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Locadora.Domain.Excecoes.DomainException)
+  Stack Trace:
+     at Locadora.Domain.Tests.R3_StatusDoVeiculo.VeiculoServiceTests.GarantirPlacaDisponivelAsync_PlacaCadastradaEmOutroFormato_LancaExcecao(String placa) in c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\R3_StatusDoVeiculo\VeiculoServiceTests.cs:line 75
+--- End of stack trace from previous location ---
+  Failed Locadora.Domain.Tests.R2_CicloDeVidaDaLocacao.LocacaoServiceCicloTests.ListarAsync_StatusQueNaoEhNomeDeEstado_LancaExcecao(status: "1") [< 1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Locadora.Domain.Excecoes.DomainException)
+  Stack Trace:
+     at Locadora.Domain.Tests.R2_CicloDeVidaDaLocacao.LocacaoServiceCicloTests.ListarAsync_StatusQueNaoEhNomeDeEstado_LancaExcecao(String status) in c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\R2_CicloDeVidaDaLocacao\LocacaoServiceCicloTests.cs:line 140
+--- End of stack trace from previous location ---
+  Failed Locadora.Domain.Tests.R3_StatusDoVeiculo.VeiculoServiceTests.GarantirPlacaDisponivelAsync_PlacaCadastradaEmOutroFormato_LancaExcecao(placa: "abc1d23") [< 1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Locadora.Domain.Excecoes.DomainException)
+  Stack Trace:
+     at Locadora.Domain.Tests.R3_StatusDoVeiculo.VeiculoServiceTests.GarantirPlacaDisponivelAsync_PlacaCadastradaEmOutroFormato_LancaExcecao(String placa) in c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\R3_StatusDoVeiculo\VeiculoServiceTests.cs:line 75
+--- End of stack trace from previous location ---
+[xUnit.net 00:00:01.78]     Locadora.Domain.Tests.R3_StatusDoVeiculo.VeiculoServiceTests.GarantirPlacaDisponivelAsync_PlacaCadastradaEmOutroFormato_LancaExcecao(placa: "ABC-1D23") [FAIL]
+[xUnit.net 00:00:01.78]     Locadora.Domain.Tests.R1_DevolucaoComMulta.LocacaoServiceDevolucaoTests.FinalizarAsync_FormaInformadaPorNumeroOuCombinacao_LancaExcecao(forma: "3") [FAIL]
+[xUnit.net 00:00:01.78]     Locadora.Domain.Tests.R1_DevolucaoComMulta.LocacaoServiceDevolucaoTests.FinalizarAsync_FormaInformadaPorNumeroOuCombinacao_LancaExcecao(forma: "0") [FAIL]
+[xUnit.net 00:00:01.78]     Locadora.Domain.Tests.R1_DevolucaoComMulta.LocacaoServiceDevolucaoTests.FinalizarAsync_FormaInformadaPorNumeroOuCombinacao_LancaExcecao(forma: "CartaoCredito,CartaoDebito") [FAIL]
+  Failed Locadora.Domain.Tests.R3_StatusDoVeiculo.VeiculoServiceTests.GarantirPlacaDisponivelAsync_PlacaCadastradaEmOutroFormato_LancaExcecao(placa: "ABC-1D23") [< 1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Locadora.Domain.Excecoes.DomainException)
+  Stack Trace:
+     at Locadora.Domain.Tests.R3_StatusDoVeiculo.VeiculoServiceTests.GarantirPlacaDisponivelAsync_PlacaCadastradaEmOutroFormato_LancaExcecao(String placa) in c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\R3_StatusDoVeiculo\VeiculoServiceTests.cs:line 75
+--- End of stack trace from previous location ---
+  Failed Locadora.Domain.Tests.R1_DevolucaoComMulta.LocacaoServiceDevolucaoTests.FinalizarAsync_FormaInformadaPorNumeroOuCombinacao_LancaExcecao(forma: "3") [2 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Locadora.Domain.Excecoes.DomainException)
+  Stack Trace:
+     at Locadora.Domain.Tests.R1_DevolucaoComMulta.LocacaoServiceDevolucaoTests.FinalizarAsync_FormaInformadaPorNumeroOuCombinacao_LancaExcecao(String forma) in c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\R1_DevolucaoComMulta\LocacaoServiceDevolucaoTests.cs:line 82
+--- End of stack trace from previous location ---
+  Failed Locadora.Domain.Tests.R1_DevolucaoComMulta.LocacaoServiceDevolucaoTests.FinalizarAsync_FormaInformadaPorNumeroOuCombinacao_LancaExcecao(forma: "0") [< 1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Locadora.Domain.Excecoes.DomainException)
+  Stack Trace:
+     at Locadora.Domain.Tests.R1_DevolucaoComMulta.LocacaoServiceDevolucaoTests.FinalizarAsync_FormaInformadaPorNumeroOuCombinacao_LancaExcecao(String forma) in c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\R1_DevolucaoComMulta\LocacaoServiceDevolucaoTests.cs:line 82
+--- End of stack trace from previous location ---
+  Failed Locadora.Domain.Tests.R1_DevolucaoComMulta.LocacaoServiceDevolucaoTests.FinalizarAsync_FormaInformadaPorNumeroOuCombinacao_LancaExcecao(forma: "CartaoCredito,CartaoDebito") [< 1 ms]
+  Error Message:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(Locadora.Domain.Excecoes.DomainException)
+  Stack Trace:
+     at Locadora.Domain.Tests.R1_DevolucaoComMulta.LocacaoServiceDevolucaoTests.FinalizarAsync_FormaInformadaPorNumeroOuCombinacao_LancaExcecao(String forma) in c:\Users\catanio\Projects\aloc-veiculos\tests\Locadora.Domain.Tests\R1_DevolucaoComMulta\LocacaoServiceDevolucaoTests.cs:line 82
+--- End of stack trace from previous location ---
+Results File: c:\Users\catanio\Projects\aloc-veiculos\docs\testes\relatorio-inicial.trx
+
+Failed!  - Failed:    10, Passed:   103, Skipped:     0, Total:   113, Duration: 671 ms - Locadora.Domain.Tests.dll (net10.0)

@@ -7,7 +7,7 @@ public class Cliente
     private const int TamanhoCpf = 11;
     private const int TamanhoCnh = 11;
 
-    public int Id { get; private set; }
+    public int Id { get; protected set; }
     public string Nome { get; private set; } = null!;
     public string Cpf { get; private set; } = null!;
     public string Cnh { get; private set; } = null!;
@@ -15,7 +15,7 @@ public class Cliente
     public string? Email { get; private set; }
     public bool Ativo { get; private set; } = true;
 
-    private Cliente() { }
+    protected Cliente() { }
 
     public Cliente(string nome, string cpf, string cnh, string telefone, string? email)
     {

@@ -4,12 +4,12 @@ namespace Locadora.Domain.Entidades;
 
 public class Categoria
 {
-    public int Id { get; private set; }
+    public int Id { get; protected set; }
     public string Nome { get; private set; } = null!;
     public decimal ValorDiaria { get; private set; }
     public bool Ativo { get; private set; } = true;
 
-    private Categoria() { }
+    protected Categoria() { }
 
     public Categoria(string nome, decimal valorDiaria) => DefinirDados(nome, valorDiaria);
 

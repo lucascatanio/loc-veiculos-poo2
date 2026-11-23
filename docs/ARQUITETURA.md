@@ -159,7 +159,7 @@ Arquivo: `Infra/Consultas/PainelConsulta.cs`, que implementa `Domain/Interfaces/
 | Entidade chega até o Controller | Sem classes intermediárias na Application | O Controller precisa conhecer a forma da entidade para mapear |
 | Repositório por agregado + UnitOfWork | Domain sem EF; commit controlado pelo AppService | Mais interfaces que usar o DbContext direto |
 | Relógio injetado | Regras de tempo demonstráveis e determinísticas | Toda chamada com data precisa receber o "agora" |
-| Sem testes automatizados | Menos escopo | Regras de cálculo validadas manualmente pelo Swagger (roteiro em [DEMONSTRACAO.md](DEMONSTRACAO.md)) |
+| Testes unitários só no domínio, em 3 requisitos (devolução, ciclo da locação, status do veículo) | Regras de cálculo e de estado verificadas sem banco ([relatório](testes/relatorio-inicial.md)) | Application, Infra, Api e Desktop sem teste automatizado; `Id` de `Categoria`/`Cliente`/`Veiculo` virou `protected set` para os testes |
 | Concorrência otimista (`rowversion`) | Sem lock no banco; o caso comum não espera | O segundo funcionário recebe 409 e precisa repetir a operação |
 | `ValorPago` guardado na locação | Listagem e saldo sem somar pagamentos | Dado duplicado; só muda em `RegistrarPagamento` e `Finalizar`, protegido pelo `rowversion` |
 | Enums de negócio convertidos no Domain | Uma regra só para corpo e query; mensagem em português com os valores aceitos | Valor inválido é 422 (regra), não 400 (formato) |
