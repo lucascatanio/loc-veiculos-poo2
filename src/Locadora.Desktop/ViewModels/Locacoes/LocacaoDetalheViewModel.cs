@@ -47,7 +47,6 @@ public partial class LocacaoDetalheViewModel : ViewModelBase
     public bool EstaAberta => Locacao?.Status == OpcaoDeStatus.Abertas.Valor;
     public bool ExtratoVazio => Carregada && Extrato.Count == 0;
 
-    // A navegação só aceita Action; quem precisa aguardar o carregamento usa CarregarAsync.
     public void Carregar(int id) => _ = CarregarAsync(id);
 
     public async Task CarregarAsync(int id)

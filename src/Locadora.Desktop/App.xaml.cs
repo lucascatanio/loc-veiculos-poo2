@@ -39,7 +39,6 @@ public partial class App : Application
 #endif
     }
 
-    // Última rede de segurança: o que escapar dos ViewModels avisa o funcionário em vez de fechar o app.
     private void AoOcorrerErroNaoTratado(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
     {
         e.Handled = true;
@@ -53,7 +52,6 @@ public partial class App : Application
             MessageBox.Show(mensagem, titulo);
     }
 
-    // Sem isso o WPF formata datas e números (StringFormat) em en-US, independente do Windows.
     private static void DefinirCulturaBrasileira()
     {
         var cultura = new CultureInfo("pt-BR");

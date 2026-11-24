@@ -8,7 +8,6 @@ public class MinutosParaAtrasoConversor : IValueConverter
     private const int MinutosPorHora = 60;
     private const int MinutosPorDia = 24 * MinutosPorHora;
 
-    // Dias contam por dia iniciado, como a multa estimada da API.
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not int minutos) return "";

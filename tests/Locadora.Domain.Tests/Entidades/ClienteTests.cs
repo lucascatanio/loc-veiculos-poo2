@@ -6,7 +6,6 @@ namespace Locadora.Domain.Tests.Entidades;
 
 public sealed class ClienteTests
 {
-    // '٣' (U+0663) é dígito Unicode, mas não ASCII: não pode contar como dígito.
     private const char DigitoArabe = '٣';
 
     [Fact]

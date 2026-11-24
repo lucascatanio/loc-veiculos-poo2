@@ -10,14 +10,12 @@ public sealed class LocacaoTests
 {
     private const string MensagemLimite = "O valor da locação passaria do limite de R$ 99.999.999,99. Reduza o período.";
 
-    // 33.333.333,33 x 3 diárias = exatamente VALOR_MAXIMO; 99.999.999,99 x 1 também.
     public static TheoryData<decimal, int> PrevistoNoLimite => new()
     {
         { 33_333_333.33m, 3 },
         { 99_999_999.99m, 1 },
     };
 
-    // 50.000.000,00 x 2 = VALOR_MAXIMO + 0,01.
     public static TheoryData<decimal, int> PrevistoAcimaDoLimite => new()
     {
         { 50_000_000m, 2 },
@@ -30,13 +28,13 @@ public sealed class LocacaoTests
         { 100m, 61, 120m },
         { 100m, 1440, 120m },
         { 100m, 1441, 240m },
-        { 10.01m, 61, 12.01m },   // 12,012 arredonda para baixo
-        { 10.02m, 61, 12.02m },   // 12,024
-        { 10.03m, 61, 12.04m },   // 12,036 arredonda para cima
-        { 10.04m, 61, 12.05m },   // 12,048
-        { 0.01m, 61, 0.01m },     // 0,012
-        { 0.03m, 61, 0.04m },     // 0,036
-        { 33.33m, 2881, 119.99m }, // 3 dias: 119,988
+        { 10.01m, 61, 12.01m },
+        { 10.02m, 61, 12.02m },
+        { 10.03m, 61, 12.04m },
+        { 10.04m, 61, 12.05m },
+        { 0.01m, 61, 0.01m },
+        { 0.03m, 61, 0.04m },
+        { 33.33m, 2881, 119.99m },
     };
 
     [Theory]
@@ -598,7 +596,6 @@ public sealed class LocacaoTests
     [Fact]
     public void Finalizar_TotalComMultaExatamenteNoLimite_Aceita()
     {
-        // 45.454.545,45 de previsto + 54.545.454,54 de multa (1 dia) = VALOR_MAXIMO
         var locacao = Fabrica.Locacao(valorDiaria: 45_454_545.45m, prevista: Fabrica.Agora.AddDays(1));
         var devolucao = locacao.DataPrevistaDevolucao.AddMinutes(61);
 
@@ -610,7 +607,6 @@ public sealed class LocacaoTests
     [Fact]
     public void Finalizar_TotalComMultaAcimaDoLimite_Lanca()
     {
-        // 45.454.545,46 + 54.545.454,55 = 100.000.000,01: o primeiro total acima do limite com 1 dia de atraso
         var locacao = Fabrica.Locacao(valorDiaria: 45_454_545.46m, prevista: Fabrica.Agora.AddDays(1));
         var devolucao = locacao.DataPrevistaDevolucao.AddMinutes(61);
 
@@ -722,7 +718,6 @@ public sealed class LocacaoTests
     [InlineData(2880, 500)]
     public void Prorrogar_NovaData_RecalculaPrevistoETotal(int minutosAposPrevista, int previstoEsperado)
     {
-        // retirada + 3 dias: prorrogar 1 minuto já abre a 4ª diária
         var locacao = Fabrica.Locacao(valorDiaria: 100m, prevista: Fabrica.Agora.AddDays(3));
         var novaData = locacao.DataPrevistaDevolucao.AddMinutes(minutosAposPrevista);
 
@@ -803,7 +798,6 @@ public sealed class LocacaoTests
         Assert.Equal("Só é possível cancelar locação aberta.", ex.Message);
     }
 
-    // 3 diárias de 100 já quitadas por entrada, então Finalizar no prazo aceita lista vazia.
     private static Locacao Locacao3DiasSaldoZerado(int kmRetirada = 10_000)
     {
         var locacao = Fabrica.Locacao(valorDiaria: 100m, kmRetirada: kmRetirada, prevista: Fabrica.Agora.AddDays(3));

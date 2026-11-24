@@ -2,7 +2,6 @@ using System.Globalization;
 
 namespace Locadora.Desktop.ViewModels.Locacoes;
 
-// Pré-visualização do contrato enquanto o formulário é preenchido: quem confirma valores e diárias é a API.
 public sealed record ResumoDaRetirada(
     int DiariasPrevistas,
     decimal TotalPrevisto,

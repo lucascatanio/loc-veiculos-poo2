@@ -60,7 +60,6 @@ public static class Fabrica
         return funcionario;
     }
 
-    // valorDiaria e kmRetirada vêm da categoria e do veículo; só valem quando o veículo é criado aqui.
     public static Locacao Locacao(
         int id = 1,
         Cliente? cliente = null,

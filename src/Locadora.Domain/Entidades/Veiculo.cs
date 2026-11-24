@@ -96,7 +96,6 @@ public partial class Veiculo
     public static string NormalizarPlaca(string? placa) =>
         (placa ?? string.Empty).Replace("-", "").Replace(" ", "").ToUpperInvariant();
 
-    // Padrão antigo (ABC1234) e Mercosul (ABC1D23)
     [GeneratedRegex("^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$")]
     private static partial Regex PadraoPlaca();
 

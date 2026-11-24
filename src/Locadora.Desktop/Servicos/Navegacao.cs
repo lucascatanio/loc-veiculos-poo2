@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Locadora.Desktop.Servicos;
 
-// O Shell liga um ContentControl a ViewModelAtual; o DataTemplate de Temas/Telas.xaml escolhe a View.
 public partial class Navegacao(IServiceProvider provider) : ObservableObject, INavegacao
 {
     [ObservableProperty]

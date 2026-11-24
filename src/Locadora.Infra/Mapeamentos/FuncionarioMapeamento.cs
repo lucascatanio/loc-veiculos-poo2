@@ -6,7 +6,6 @@ namespace Locadora.Infra.Mapeamentos;
 
 public class FuncionarioMapeamento : IEntityTypeConfiguration<Funcionario>
 {
-    // Hash BCrypt fixo de "admin123": gerar dentro do HasData mudaria a migration a cada geração.
     private const string SenhaHashAdmin = "$2a$11$/DikLFg7l6Z8oqbZmlakgObqpEEW/TTrwdwk1g.dbopnsnuFPYE8y";
 
     public void Configure(EntityTypeBuilder<Funcionario> builder)

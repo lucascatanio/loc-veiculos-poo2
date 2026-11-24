@@ -58,8 +58,6 @@ public partial class ShellViewModel : ViewModelBase
     [RelayCommand]
     private void Sair() => SairSolicitado?.Invoke();
 
-    // Telas abertas por dentro de outras (contrato, devolução) também marcam o item da sua área.
-    // Só marca: reabrir o item navegaria de volta para a lista e descartaria a tela aberta.
     private void MarcarNoMenuATelaAtual(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName != nameof(INavegacao.ViewModelAtual)) return;

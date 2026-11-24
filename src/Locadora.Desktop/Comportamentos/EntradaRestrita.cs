@@ -13,8 +13,6 @@ public enum ModoDeEntrada
     Placa
 }
 
-// Impede de digitar ou colar o que o campo não aceita, junto com o MaxLength do TextBox.
-// É só ajuda de preenchimento: quem decide o que é válido continua sendo a API.
 public static partial class EntradaRestrita
 {
     private const string Ponto = ".";
@@ -47,7 +45,6 @@ public static partial class EntradaRestrita
         var caixa = (TextBox)sender;
         var modo = GetModo(caixa);
 
-        // Teclado americano e numpad digitam ponto; descartá-lo transformaria 150.50 em 15050.
         if (modo == ModoDeEntrada.Decimal && e.Text == Ponto)
         {
             e.Handled = true;
@@ -58,7 +55,6 @@ public static partial class EntradaRestrita
         e.Handled = !Aceita(modo, TextoApos(caixa, e.Text));
     }
 
-    // A barra de espaço não gera PreviewTextInput no TextBox.
     private static void AoPressionarTecla(object sender, KeyEventArgs e)
     {
         var caixa = (TextBox)sender;
@@ -85,7 +81,6 @@ public static partial class EntradaRestrita
             InserirSeAceito(caixa, modo, aproveitado);
     }
 
-    // "150.50" (sem vírgula, um ponto só) é decimal; em "1.234,56" o ponto é milhar e é descartado.
     private static string NormalizarColado(ModoDeEntrada modo, string colado) => modo switch
     {
         ModoDeEntrada.Decimal when !colado.Contains(Virgula) && colado.Count(c => c == '.') == 1
@@ -122,7 +117,6 @@ public static partial class EntradaRestrita
         _ => true
     };
 
-    // Só dígitos, com no máximo uma vírgula e duas casas depois dela (centavos).
     [GeneratedRegex(@"^\d*(,\d{0,2})?$")]
     private static partial Regex ValorComVirgula();
 }

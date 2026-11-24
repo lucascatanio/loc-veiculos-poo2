@@ -5,7 +5,6 @@
                     xmlns:vmLocacoes="clr-namespace:Locadora.Desktop.ViewModels.Locacoes"
                     xmlns:viewsLocacoes="clr-namespace:Locadora.Desktop.Views.Locacoes">
 
-    <!-- Cada tela registra aqui o par ViewModel -> View -->
     <DataTemplate DataType="{x:Type vm:LoginViewModel}"><views:LoginView/></DataTemplate>
     <DataTemplate DataType="{x:Type vm:ShellViewModel}"><views:ShellView/></DataTemplate>
     <DataTemplate DataType="{x:Type vm:PainelViewModel}"><views:PainelView/></DataTemplate>

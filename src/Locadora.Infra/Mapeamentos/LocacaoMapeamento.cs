@@ -15,7 +15,6 @@ public class LocacaoMapeamento : IEntityTypeConfiguration<Locacao>
         builder.Property(l => l.ObservacaoRetirada).HasMaxLength(500);
         builder.Property(l => l.ObservacaoDevolucao).HasMaxLength(500);
 
-        // Concorrência otimista: evita pagamentos simultâneos sobrescreverem ValorPago.
         builder.Property<byte[]>("RowVersion").IsRowVersion();
 
         builder.HasIndex(l => l.Status);

@@ -5,7 +5,6 @@ namespace Locadora.Desktop.Servicos;
 
 public class ApiException(int status, string detalhe, IReadOnlyList<string> erros) : Exception(detalhe)
 {
-    // 0 quando a API nem respondeu (conexão recusada, timeout).
     public int Status { get; } = status;
     public string Detalhe { get; } = detalhe;
     public IReadOnlyList<string> Erros { get; } = erros;
@@ -36,7 +35,6 @@ public class ApiException(int status, string detalhe, IReadOnlyList<string> erro
         }
         catch (JsonException)
         {
-            // corpo vazio ou que não é JSON (ex.: 401 sem corpo): cai na mensagem padrão do status
         }
 
         var texto = erros.Count > 0 ? string.Join(Environment.NewLine, erros) : detalhe ?? MensagemPadrao(status);

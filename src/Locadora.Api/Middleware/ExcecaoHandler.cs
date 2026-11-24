@@ -16,15 +16,12 @@ public class ExcecaoHandler(ILogger<ExcecaoHandler> logger) : IExceptionHandler
     {
         var (status, titulo, detalhe) = Classificar(exception);
 
-        // Results.Problem escreve JSON mesmo com Accept: text/plain (padrão do Swagger UI);
-        // IProblemDetailsService recusaria e o detail se perderia.
         await Results.Problem(detail: detalhe, statusCode: status, title: titulo).ExecuteAsync(httpContext);
         return true;
     }
 
     private (int Status, string Titulo, string Detalhe) Classificar(Exception exception)
     {
-        // Percorre a hierarquia para que subclasses de DomainException também caiam em 422.
         for (var tipo = exception.GetType(); tipo is not null; tipo = tipo.BaseType)
         {
             if (Mapa.TryGetValue(tipo, out var mapeado))

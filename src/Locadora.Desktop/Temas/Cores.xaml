@@ -16,7 +16,6 @@
     <SolidColorBrush x:Key="PapelBrush" Color="{StaticResource PapelCor}"/>
     <SolidColorBrush x:Key="AzulMercosulBrush" Color="{StaticResource AzulMercosulCor}"/>
     <SolidColorBrush x:Key="FaixaAmarelaBrush" Color="{StaticResource FaixaAmarelaCor}"/>
-    <!-- O amarelo da faixa não tem contraste para texto sobre branco; este é o mesmo tom escurecido. -->
     <SolidColorBrush x:Key="AtencaoTextoBrush" Color="#8A6A00"/>
     <SolidColorBrush x:Key="SinalVermelhoBrush" Color="{StaticResource SinalVermelhoCor}"/>
     <SolidColorBrush x:Key="LiberadoBrush" Color="{StaticResource LiberadoCor}"/>

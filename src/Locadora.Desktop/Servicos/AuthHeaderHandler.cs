@@ -13,7 +13,6 @@ public class AuthHeaderHandler(SessaoUsuario sessao) : DelegatingHandler
 
         var resposta = await base.SendAsync(request, cancellationToken);
 
-        // No login, 401 é senha errada e não sessão expirada.
         if (resposta.StatusCode == HttpStatusCode.Unauthorized && !EhLogin(request))
             sessao.Encerrar();
 
