@@ -13,7 +13,7 @@ public class Locacao
 
     private readonly List<Pagamento> _pagamentos = [];
 
-    public int Id { get; private set; }
+    public int Id { get; protected set; }
     public int ClienteId { get; private set; }
     public Cliente Cliente { get; private set; } = null!;
     public int VeiculoId { get; private set; }

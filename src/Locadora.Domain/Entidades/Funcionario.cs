@@ -7,7 +7,7 @@ public class Funcionario
 {
     public const int TamanhoMinimoSenha = 6;
 
-    public int Id { get; private set; }
+    public int Id { get; protected set; }
     public string Nome { get; private set; } = null!;
     public string Email { get; private set; } = null!;
     public string SenhaHash { get; private set; } = null!;

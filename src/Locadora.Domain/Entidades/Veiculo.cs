@@ -8,7 +8,7 @@ public partial class Veiculo
 {
     private const int AnoMinimo = 1950;
 
-    public int Id { get; private set; }
+    public int Id { get; protected set; }
     public string Placa { get; private set; } = null!;
     public string Marca { get; private set; } = null!;
     public string Modelo { get; private set; } = null!;

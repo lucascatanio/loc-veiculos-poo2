@@ -30,6 +30,8 @@ Se der erro de conexão com o banco, rode `sqllocaldb start MSSQLLocalDB`.
 
 ## Desenvolvimento
 
+Os testes unitários do Domain rodam com `dotnet test` na raiz, ou pelo Gerenciador de Testes do Visual Studio. Não precisam de banco.
+
 Em Debug, o desktop aceita atalhos de linha de comando (ignorados em Release):
 `dotnet run --project src/Locadora.Desktop -- --login admin@locadora.local admin123` entra sozinho,
 e `--tela <Painel|Locacoes|NovaLocacao|Clientes|Veiculos|Categorias|Funcionarios>` abre direto nessa tela depois do login; `--locacao <id>` abre o contrato e `--devolucao <id>` a devolução dessa locação. A lista completa está em `src/Locadora.Desktop/Desenvolvimento/AtalhosDeDesenvolvimento.cs`.

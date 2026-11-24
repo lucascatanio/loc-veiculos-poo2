@@ -5,7 +5,7 @@ namespace Locadora.Domain.Entidades;
 
 public class Pagamento
 {
-    public int Id { get; private set; }
+    public int Id { get; protected set; }
     public decimal Valor { get; private set; }
     public DateTime DataPagamento { get; private set; }
     public TipoPagamento Tipo { get; private set; }
