@@ -137,7 +137,7 @@ public sealed class LocacaoTests
     [InlineData(2880, 2)]
     [InlineData(2881, 3)]
     [InlineData(4320, 3)]
-    public void DiariasContratadas_PorDuracao_ArredondaParaCimaComMinimoDeUma(int minutos, int esperadas)
+    public void DiariasContratadas_PorDuracao_ArredondaParaCima(int minutos, int esperadas)
     {
         var locacao = Fabrica.Locacao(prevista: Fabrica.Agora.AddMinutes(minutos));
 
