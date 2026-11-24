@@ -82,6 +82,7 @@ public class Locacao
         return excesso.TotalMinutes <= TOLERANCIA_MINUTOS ? 0 : (int)Math.Ceiling(excesso.TotalHours / 24);
     }
 
+    // AwayFromZero é o arredondamento do ROUND do SQL Server: a multa estimada no painel tem que bater com a cobrada.
     public decimal CalcularMulta(DateTime dataDevolucao) =>
         Math.Round(CalcularDiasAtraso(dataDevolucao) * ValorDiaria * (1 + TAXA_MULTA), 2, MidpointRounding.AwayFromZero);
 
@@ -163,7 +164,7 @@ public class Locacao
     }
 
     private static int ContarDiarias(DateTime inicio, DateTime fim) =>
-        Math.Max(1, (int)Math.Ceiling((fim - inicio).TotalHours / 24));
+        (int)Math.Ceiling((fim - inicio).TotalHours / 24);
 
     private static decimal CalcularPrevisto(DateTime inicio, DateTime fim, decimal valorDiaria)
     {
