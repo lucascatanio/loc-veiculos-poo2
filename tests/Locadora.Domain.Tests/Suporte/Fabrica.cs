@@ -42,9 +42,9 @@ public static class Fabrica
         bool ativo = true)
     {
         var veiculo = new VeiculoComId(id, placa, marca, modelo, ano, cor, kmAtual, categoria ?? Categoria());
-        if (!ativo) veiculo.Inativar();
         if (status == StatusVeiculo.Locado) veiculo.Alocar();
         if (status == StatusVeiculo.Manutencao) veiculo.EnviarParaManutencao();
+        if (!ativo) veiculo.Inativar();
         return veiculo;
     }
 

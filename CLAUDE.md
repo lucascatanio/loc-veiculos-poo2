@@ -7,6 +7,7 @@ Arquitetura, responsabilidade de cada camada e convenções: [docs/ARQUITETURA.m
 ```bash
 dotnet tool restore                      # instala o dotnet-ef local (dotnet-tools.json)
 dotnet build Locadora.sln
+dotnet test                              # testes unitários do Domain (tests/Locadora.Domain.Tests)
 
 dotnet run --project src/Locadora.Api    # Swagger em http://localhost:5056/swagger
 dotnet run --project src/Locadora.Desktop

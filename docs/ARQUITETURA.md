@@ -19,6 +19,7 @@ Locadora.Desktop (WPF) ──HTTP──▶ Locadora.Api ──▶ Locadora.Appli
 | `Locadora.Application` | Domain | AppServices (um por caso de uso/recurso) |
 | `Locadora.Api` | Application, Infra | Controllers, DTOs, Mapster, tratamento de erros, JWT |
 | `Locadora.Desktop` | nenhum projeto | Interface gráfica WPF (MVVM) que consome a API por HTTP. Usa os DTOs da Api por link de arquivo. Detalhes em [Desktop (WPF)](#desktop-wpf) |
+| `Locadora.Domain.Tests` (em `tests/`) | Domain | Testes unitários do Domain. Detalhes em [Testes](#testes) |
 
 `Locadora.Api` referencia `Infra` só para registrar a injeção de dependência em `Program.cs`. Controllers nunca usam tipos da Infra.
 
@@ -100,6 +101,17 @@ Direção "Pátio": fundo concreto claro, menu em asfalto, azul Mercosul como ú
 - **DTOs:** `record`s em `Api/Dtos`, sem tipos do ASP.NET (a pasta é compilada também no WPF).
 - **Comentários:** só quando o código não explica o porquê.
 
+## Testes
+
+Testes unitários das entidades do Domain, em `tests/Locadora.Domain.Tests`. Rodam com `dotnet test`, sem banco nem API.
+
+- **Ferramentas:** xUnit v3 sobre o Microsoft.Testing.Platform (declarado no `global.json`, exigido pelo `dotnet test` do SDK 10), NSubstitute para as interfaces e o `Assert` do próprio xUnit, sem biblioteca de asserção.
+- **Organização:** as pastas espelham o Domain (`Entidades/`, `Servicos/`). Há uma classe de teste por classe testada (`LocacaoTests`), e os métodos seguem `Metodo_Cenario_Resultado` (`Finalizar_ComAtrasoAlemDaTolerancia_CobraMultaPorDia`).
+- **Exceções:** o teste confere o tipo e a mensagem exata. Quase toda regra lança `DomainException`, então conferir só o tipo deixaria um teste passar porque outra validação barrou antes. A mensagem também é o texto que o usuário vê na tela.
+- **Cálculos:** `[Theory]` nos pontos de virada: 60 e 61 minutos de tolerância, 24h e 24h01 de diária, arredondamento da multa, `VALOR_MAXIMO` e um centavo acima.
+- **Dados:** `Suporte/Fabrica` cria entidades válidas com parâmetros opcionais, e cada teste informa só o que importa para ele. As datas partem de `Fabrica.Agora`, que é fixa.
+- **Ids:** o `Id` das entidades é `protected set`. Subclasses de teste (`ClienteComId`, `VeiculoComId`...) atribuem o Id sem reflexão e sem `InternalsVisibleTo`.
+
 ## Onde está o SOLID
 
 | Princípio | Onde | Como |
@@ -127,7 +139,7 @@ Direção "Pátio": fundo concreto claro, menu em asfalto, azul Mercosul como ú
 | Nomes que revelam intenção: `PodeSerLocado()`, `SaldoDevedor()`, `CalcularDiasAtraso()`, `GarantirCpfDisponivelAsync()`, `CancelarAlocacao()` | `Domain/Entidades`, `Domain/Servicos` |
 | Constantes nomeadas em vez de números mágicos, reaproveitadas até no SQL manual | `Locacao.TAXA_MULTA` e `Locacao.TOLERANCIA_MINUTOS` → `Infra/Consultas/PainelConsulta.cs` |
 | Guard clauses: valida e sai cedo, sem `if` aninhado; validações antes de qualquer mudança de estado | `Locacao.Finalizar`, `Locacao.Prorrogar`, `Veiculo.Alocar` |
-| Encapsulamento: `private set` em todas as entidades, coleção exposta como `IReadOnlyCollection` | `Locacao.Pagamentos` (backing field `_pagamentos`) |
+| Encapsulamento: `private set` em todas as entidades (só o `Id` é `protected set`, para os testes), coleção exposta como `IReadOnlyCollection` | `Locacao.Pagamentos` (backing field `_pagamentos`) |
 | Funções pequenas com uma responsabilidade; AppServices de 3 a 5 linhas por caso de uso | `Application/AppServices/LocacaoAppService.cs` |
 | Sem duplicação: conversão de enum e normalização de dados num lugar só | `Domain/Enums/ConversorEnum.cs`, `Cliente.NormalizarCpf`, `Funcionario.NormalizarEmail`, `Veiculo.NormalizarPlaca` |
 | Comentários só onde o código não explica o porquê | ex.: `DATEDIFF` em segundos no `PainelConsulta`, relógio real no `JwtTokenService` |
@@ -159,7 +171,7 @@ Arquivo: `Infra/Consultas/PainelConsulta.cs`, que implementa `Domain/Interfaces/
 | Entidade chega até o Controller | Sem classes intermediárias na Application | O Controller precisa conhecer a forma da entidade para mapear |
 | Repositório por agregado + UnitOfWork | Domain sem EF; commit controlado pelo AppService | Mais interfaces que usar o DbContext direto |
 | Relógio injetado | Regras de tempo demonstráveis e determinísticas | Toda chamada com data precisa receber o "agora" |
-| Sem testes automatizados | Menos escopo | Regras de cálculo validadas manualmente pelo Swagger (roteiro em [DEMONSTRACAO.md](DEMONSTRACAO.md)) |
+| Testes unitários só no Domain | Invariantes e cálculos verificados em segundos, sem banco | Application, Infra (mapeamentos, SQL do painel) e Api continuam validados manualmente pelo Swagger |
 | Concorrência otimista (`rowversion`) | Sem lock no banco; o caso comum não espera | O segundo funcionário recebe 409 e precisa repetir a operação |
 | `ValorPago` guardado na locação | Listagem e saldo sem somar pagamentos | Dado duplicado; só muda em `RegistrarPagamento` e `Finalizar`, protegido pelo `rowversion` |
 | Enums de negócio convertidos no Domain | Uma regra só para corpo e query; mensagem em português com os valores aceitos | Valor inválido é 422 (regra), não 400 (formato) |
