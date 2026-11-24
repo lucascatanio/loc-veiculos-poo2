@@ -13,9 +13,6 @@ public class PainelConsulta(LocadoraDbContext context) : IPainelConsulta
         var toleranciaSegundos = Locacao.TOLERANCIA_MINUTOS * 60;
         var taxaMulta = Locacao.TAXA_MULTA;
 
-        // DATEDIFF(MINUTE) conta viradas de minuto, não minutos decorridos: perto da tolerância divergiria da
-        // prévia da entidade. Em segundos a diferença fica abaixo de 1 s.
-        // O ORDER BY fica no LINQ porque o EF embrulha o SQL em subconsulta, onde ORDER BY puro é inválido.
         return await context.Database
             .SqlQuery<LocacaoAtrasadaItem>($"""
                 SELECT

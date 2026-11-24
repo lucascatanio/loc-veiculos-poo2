@@ -12,8 +12,6 @@ public class JwtTokenService(IOptions<JwtOpcoes> opcoes)
 
     public (string Token, DateTime ExpiraEm) Gerar(Funcionario funcionario)
     {
-        // Relógio real, não o TimeProvider: em Development ele pode estar deslocado e o
-        // validador do JwtBearer usa o relógio do sistema, então o token nasceria expirado.
         var agora = DateTime.UtcNow;
         var expiraEm = agora.AddHours(_opcoes.ExpiracaoHoras);
 

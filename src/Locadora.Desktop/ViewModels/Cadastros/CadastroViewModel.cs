@@ -6,14 +6,6 @@ using Locadora.Desktop.Servicos;
 
 namespace Locadora.Desktop.ViewModels.Cadastros;
 
-// Base das telas de cadastro (lista à esquerda, formulário à direita). Para criar um cadastro novo:
-//  1. herde de CadastroViewModel<TResponse> e declare no formulário uma propriedade observável por campo;
-//  2. implemente NomeDoCadastro, ListarAsync, ObterId e ObterAtivo, que ligam a lista ao IApiClient;
-//  3. implemente PreencherFormulario (item nulo = formulário vazio) e SalvarNaApiAsync (id nulo = criar, senão atualizar);
-//  4. implemente InativarNaApiAsync, ReativarNaApiAsync e os textos de confirmação;
-//  5. se houver validação local de campo, sobrescreva FormularioValido (a API continua sendo quem decide as regras).
-// Erros da API não precisam de tratamento: ExecutarAsync os coloca em MensagemErro, que a View mostra no formulário.
-// A View só precisa ligar os comandos e propriedades desta classe; veja CategoriasView como modelo.
 public abstract partial class CadastroViewModel<TItem> : ViewModelBase where TItem : class
 {
     private bool _atualizandoSelecao;
@@ -163,7 +155,6 @@ public abstract partial class CadastroViewModel<TItem> : ViewModelBase where TIt
         var busca = string.IsNullOrWhiteSpace(TextoBusca) ? null : TextoBusca.Trim();
         var itens = await ListarAsync(busca, MostrarInativos);
 
-        // Limpar a coleção faz a lista devolver seleção nula; sem a trava isso apagaria o formulário.
         _atualizandoSelecao = true;
         Itens.Clear();
         foreach (var item in itens)

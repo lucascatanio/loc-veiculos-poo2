@@ -27,7 +27,6 @@
         </Setter>
     </Style>
 
-    <!-- Botões: o padrão é o secundário; Primario, Perigo e Link são variações -->
     <Style TargetType="Button">
         <Setter Property="FontFamily" Value="{StaticResource BarlowMedium}"/>
         <Setter Property="FontSize" Value="14"/>
@@ -147,13 +146,11 @@
         </Setter>
     </Style>
 
-    <!-- Ação destrutiva fica discreta: não compete com o botão primário. -->
     <Style x:Key="LinkPerigoso" TargetType="Button" BasedOn="{StaticResource Link}">
         <Setter Property="Foreground" Value="{StaticResource SinalVermelhoBrush}"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 
-    <!-- Campos -->
     <Style x:Key="CampoBase" TargetType="Control">
         <Setter Property="FontFamily" Value="{StaticResource Barlow}"/>
         <Setter Property="FontSize" Value="14"/>
@@ -292,7 +289,6 @@
         </Setter>
     </Style>
 
-    <!-- O template padrão do DatePickerTextBox exibe "Select a date" como marca d'água; este não tem marca -->
     <Style TargetType="DatePickerTextBox">
         <Setter Property="FontFamily" Value="{StaticResource Barlow}"/>
         <Setter Property="Padding" Value="10,0"/>
@@ -359,7 +355,6 @@
         </Setter>
     </Style>
 
-    <!-- Barra de rolagem discreta -->
     <Style x:Key="RolagemBotaoVazio" TargetType="RepeatButton">
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="IsTabStop" Value="False"/>
@@ -435,7 +430,6 @@
         </Style.Triggers>
     </Style>
 
-    <!-- Listas em linhas com divisória; a linha selecionada ganha uma barra azul à esquerda -->
     <Style TargetType="ListViewItem">
         <Setter Property="FontFamily" Value="{StaticResource Barlow}"/>
         <Setter Property="Padding" Value="12,10"/>

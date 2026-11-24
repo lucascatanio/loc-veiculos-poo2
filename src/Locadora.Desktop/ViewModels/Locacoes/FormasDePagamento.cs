@@ -1,6 +1,5 @@
 namespace Locadora.Desktop.ViewModels.Locacoes;
 
-// Valor é o nome do enum que a API espera; Nome é o que aparece na tela.
 public sealed record FormaDePagamento(string Valor, string Nome);
 
 public static class FormasDePagamento

@@ -45,7 +45,6 @@ public partial class MainViewModel : ObservableObject
         _sessao.Encerrar();
     }
 
-    // Pode chegar de outra thread (401 no pipeline do HttpClient). Só interessa quando já havia um shell.
     private void AoEncerrarSessao()
     {
         System.Windows.Application.Current.Dispatcher.InvokeAsync(() =>

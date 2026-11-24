@@ -4,13 +4,6 @@ using Locadora.Desktop.ViewModels.Locacoes;
 
 namespace Locadora.Desktop.Desenvolvimento;
 
-// Atalhos para abrir o app direto num estado e tirar prints (ignorados em Release):
-//   --login <email> <senha>          entra sozinho
-//   --tela <Chave|NovaLocacao>       abre a tela do menu ou a nova locação
-//   --locacao <id>                   abre o contrato da locação
-//   --devolucao <id>                 abre a devolução da locação
-//   --preencher-retirada <busca>     preenche a nova locação com o primeiro cliente e veículo encontrados
-//   --galeria                        abre a galeria de componentes
 public static class AtalhosDeDesenvolvimento
 {
     private const string TelaNovaLocacao = "NovaLocacao";

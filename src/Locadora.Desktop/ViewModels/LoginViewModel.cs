@@ -40,7 +40,6 @@ public partial class LoginViewModel(IApiClient api, SessaoUsuario sessao) : View
         LoginConcluido?.Invoke();
     });
 
-    // O /eu precisa do token já na sessão; só então id e e-mail ficam conhecidos.
     private async Task IniciarSessaoAsync()
     {
         var login = await api.LoginAsync(new LoginRequest(Email.Trim(), Senha));

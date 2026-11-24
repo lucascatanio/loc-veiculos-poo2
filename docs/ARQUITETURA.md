@@ -99,7 +99,7 @@ Direção "Pátio": fundo concreto claro, menu em asfalto, azul Mercosul como ú
 - **Exclusão:** não existe DELETE. Registros são inativados (`Ativo = false`) e podem ser reativados.
 - **Mapeamento EF:** um `IEntityTypeConfiguration<T>` por entidade em `Infra/Mapeamentos`, carregados automaticamente.
 - **DTOs:** `record`s em `Api/Dtos`, sem tipos do ASP.NET (a pasta é compilada também no WPF).
-- **Comentários:** só quando o código não explica o porquê.
+- **Comentários:** o código não tem comentários.
 
 ## Testes
 
@@ -143,7 +143,6 @@ Testes unitários das entidades e dos serviços de domínio, em `tests/Locadora.
 | Encapsulamento: `private set` em todas as entidades (só o `Id` é `protected set`, para os testes), coleção exposta como `IReadOnlyCollection` | `Locacao.Pagamentos` (backing field `_pagamentos`) |
 | Funções pequenas com uma responsabilidade; AppServices de 3 a 5 linhas por caso de uso | `Application/AppServices/LocacaoAppService.cs` |
 | Sem duplicação: conversão de enum e normalização de dados num lugar só | `Domain/Enums/ConversorEnum.cs`, `Cliente.NormalizarCpf`, `Funcionario.NormalizarEmail`, `Veiculo.NormalizarPlaca` |
-| Comentários só onde o código não explica o porquê | ex.: `DATEDIFF` em segundos no `PainelConsulta`, relógio real no `JwtTokenService` |
 | Desktop: nomes pela ação do usuário e pré-visualização explícita | `SalvarCommand`, `RegistrarRetiradaCommand`, `ResumoDaRetirada.PreverDiarias` |
 | Desktop: sem duplicação de XAML ou formatação | estilos em `Temas/`, componentes em `Controles/`, formatação em `Conversores/`, leitura de valores em `ValorMonetario` |
 | Desktop: ordem fixa nas classes e métodos curtos | campos → construtor → propriedades → comandos → métodos privados; ex.: `ViewModels/ShellViewModel.cs` |

@@ -23,7 +23,6 @@ public sealed class LocacaoServiceTests
 
     public LocacaoServiceTests() => _servico = new LocacaoService(_locacoes, _clienteService, _veiculoService);
 
-    // 3 diárias de R$ 100, retirada em Fabrica.Agora: valor previsto R$ 300.
     private Locacao LocacaoAbertaNoRepositorio(int id = 5)
     {
         var locacao = Fabrica.Locacao(id: id);

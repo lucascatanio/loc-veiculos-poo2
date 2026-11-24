@@ -52,7 +52,6 @@ public partial class PlacaMercosul : UserControl
     private static string Normalizar(string? placa) =>
         new((placa ?? "").Where(char.IsLetterOrDigit).Select(char.ToUpperInvariant).ToArray());
 
-    // Formato antigo (AAA9999) leva hífen; Mercosul (AAA9A99) não.
     private static List<string> Separar(string placa)
     {
         var antiga = placa.Length == 7 && placa[4..].All(char.IsDigit);

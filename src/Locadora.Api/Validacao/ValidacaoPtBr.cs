@@ -7,7 +7,6 @@ public static class ValidacaoPtBr
 {
     public static void ConfigurarMensagensEmPortugues(this MvcOptions options)
     {
-        // Sem isso o parâmetro `request` (não anulável) gera um "The request field is required." extra.
         options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 
         var mensagens = options.ModelBindingMessageProvider;
@@ -25,7 +24,6 @@ public static class ValidacaoPtBr
         mensagens.SetNonPropertyValueMustBeANumberAccessor(() => "O valor deve ser um número.");
     }
 
-    // O JsonInputFormatter registra a exceção do System.Text.Json, cuja mensagem vem em inglês e cita tipos internos.
     public static IActionResult CriarRespostaInvalida(ActionContext contexto)
     {
         foreach (var entrada in contexto.ModelState.Values)

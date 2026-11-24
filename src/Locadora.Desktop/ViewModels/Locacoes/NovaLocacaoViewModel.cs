@@ -16,7 +16,6 @@ public partial class NovaLocacaoViewModel : ViewModelBase
     private const int StatusDeConflito = 409;
     private const int StatusDeRegraDeNegocio = 422;
     private const string FormatoParaExibirHora = "HH:mm";
-    // Aceita "9:30" e "09:30".
     private static readonly string[] FormatosParaLerHora = [@"h\:mm", @"hh\:mm"];
     private static readonly CultureInfo PtBr = CultureInfo.GetCultureInfo("pt-BR");
 
@@ -186,7 +185,6 @@ public partial class NovaLocacaoViewModel : ViewModelBase
         CarregouVeiculos = true;
     }
 
-    // Outro funcionário pode ter locado o veículo entre a listagem e o clique: a API recusa e a lista é atualizada.
     private async Task<LocacaoResponse> AbrirLocacaoRecarregandoSeConflitarAsync(AbrirLocacaoRequest requisicao)
     {
         try
@@ -236,7 +234,6 @@ public partial class NovaLocacaoViewModel : ViewModelBase
         RegistrarRetiradaCommand.NotifyCanExecuteChanged();
     }
 
-    // Arredonda para baixo: para cima passaria de 24h e o padrão já nasceria com 2 diárias.
     private static DateTime HoraCheiaAnterior(DateTime momento) =>
         new DateTime(momento.Year, momento.Month, momento.Day, momento.Hour, 0, 0);
 }

@@ -76,7 +76,6 @@ public class LocacaoAppService(
         return locacao;
     }
 
-    // O sistema grava horário local da loja sem fuso; datas com fuso no JSON são convertidas para ele.
     private static DateTime NormalizarFuso(DateTime data) =>
         data.Kind == DateTimeKind.Unspecified
             ? data

@@ -13,7 +13,6 @@ public abstract partial class ViewModelBase : ObservableObject
     [ObservableProperty]
     private string? _mensagemErro;
 
-    // Falha de conexão chega aqui como ApiException de Status 0, já com a mensagem sobre a URL da API.
     protected async Task ExecutarAsync(Func<Task> acao)
     {
         Ocupado = true;
@@ -26,7 +25,6 @@ public abstract partial class ViewModelBase : ObservableObject
         {
             MensagemErro = ex.Detalhe;
         }
-        // Qualquer outra falha vira mensagem na tela em vez de derrubar o app.
         catch (Exception)
         {
             MensagemErro = MensagemErroInesperado;

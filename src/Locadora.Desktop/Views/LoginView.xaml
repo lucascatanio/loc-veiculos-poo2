@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:comp="clr-namespace:Locadora.Desktop.Comportamentos"
              Style="{StaticResource TelaBase}" Loaded="AoCarregar">
-    <!-- Mesma coluna e mesmo cabeçalho do Shell: ao entrar, só o menu aparece na coluna que já estava ali. -->
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>

@@ -3,7 +3,6 @@
                     xmlns:c="clr-namespace:Locadora.Desktop.Controles"
                     xmlns:vmLocacoes="clr-namespace:Locadora.Desktop.ViewModels.Locacoes">
 
-    <!-- Vocabulário do contrato, compartilhado entre a tela do contrato e o resumo da nova locação -->
     <DataTemplate x:Key="FatoDoContratoModelo">
         <StackPanel Margin="0,0,0,16">
             <TextBlock Style="{StaticResource TextoMiudo}" Text="{Binding Rotulo}"/>
@@ -22,7 +21,6 @@
         </Grid>
     </DataTemplate>
 
-    <!-- A caixa de seleção da ComboBox do tema não aplica DisplayMemberPath; estes modelos mostram o nome. -->
     <DataTemplate x:Key="NomeDaOpcao">
         <TextBlock Text="{Binding Nome}"/>
     </DataTemplate>

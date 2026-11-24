@@ -3,9 +3,6 @@ using System.Windows.Controls;
 
 namespace Locadora.Desktop.Comportamentos;
 
-// PasswordBox.Password não é uma DependencyProperty; este attached behavior a expõe para binding.
-// O padrão é null (e não ""): o binding inicial entrega "" e só uma mudança de valor liga o PasswordChanged,
-// senão o que se digita nunca chega ao ViewModel.
 public static class SenhaVinculada
 {
     public static readonly DependencyProperty SenhaProperty = DependencyProperty.RegisterAttached(

@@ -10,7 +10,6 @@ public class SessaoUsuario
 
     public bool Autenticada => !string.IsNullOrEmpty(Token);
 
-    // Pode ser disparado fora da thread de UI (a resposta 401 chega no pipeline do HttpClient).
     public event Action? SessaoEncerrada;
 
     public void Iniciar(string token, int id, string nome, string email, DateTime expiraEm)

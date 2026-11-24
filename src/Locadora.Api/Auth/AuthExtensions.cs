@@ -25,7 +25,6 @@ public static class AuthExtensions
             .AddJwtBearer(options =>
             {
                 options.MapInboundClaims = false;
-                // O token vale 8h; sem esta checagem, um funcionário inativado continuaria usando a API até expirar.
                 options.Events = new JwtBearerEvents
                 {
                     OnTokenValidated = async contexto =>
