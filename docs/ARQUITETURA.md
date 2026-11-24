@@ -103,7 +103,7 @@ Direção "Pátio": fundo concreto claro, menu em asfalto, azul Mercosul como ú
 
 ## Testes
 
-Testes unitários das entidades do Domain, em `tests/Locadora.Domain.Tests`. Rodam com `dotnet test`, sem banco nem API.
+Testes unitários das entidades e dos serviços de domínio, em `tests/Locadora.Domain.Tests`. Rodam com `dotnet test`, sem banco nem API.
 
 - **Ferramentas:** xUnit v3 sobre o Microsoft.Testing.Platform (declarado no `global.json`, exigido pelo `dotnet test` do SDK 10), NSubstitute para as interfaces e o `Assert` do próprio xUnit, sem biblioteca de asserção.
 - **Organização:** as pastas espelham o Domain (`Entidades/`, `Servicos/`). Há uma classe de teste por classe testada (`LocacaoTests`), e os métodos seguem `Metodo_Cenario_Resultado` (`Finalizar_ComAtrasoAlemDaTolerancia_CobraMultaPorDia`).
@@ -111,6 +111,7 @@ Testes unitários das entidades do Domain, em `tests/Locadora.Domain.Tests`. Rod
 - **Cálculos:** `[Theory]` nos pontos de virada: 60 e 61 minutos de tolerância, 24h e 24h01 de diária, arredondamento da multa, `VALOR_MAXIMO` e um centavo acima.
 - **Dados:** `Suporte/Fabrica` cria entidades válidas com parâmetros opcionais, e cada teste informa só o que importa para ele. As datas partem de `Fabrica.Agora`, que é fixa.
 - **Ids:** o `Id` das entidades é `protected set`. Subclasses de teste (`ClienteComId`, `VeiculoComId`...) atribuem o Id sem reflexão e sem `InternalsVisibleTo`.
+- **Serviços:** repositórios, `IHashSenha` e os serviços de que outro serviço depende (`IClienteService` e `IVeiculoService` no `LocacaoService`) são substituídos com NSubstitute. `Received` só confere os argumentos que importam: CPF e e-mail normalizados, nome com `Trim`, `ignorarId` repassado e filtro padrão `Aberta`.
 
 ## Onde está o SOLID
 
